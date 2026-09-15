@@ -1,6 +1,6 @@
 baseURL = 'https://your-vercel-url.vercel.app/'
 languageCode = 'en-us'
-title = 'My Minimal Blog'
+title = 'prnvdsi-blog'
 theme = 'hugo-bearblog'
 
 [params]
@@ -8,7 +8,7 @@ theme = 'hugo-bearblog'
   description = "A very minimal blog written from the terminal."
   
   # The text that shows in the header.
-  title = "My Minimal Blog"
+  title = "prnvdsi-blog"
   
   # Optional author info
   author = "Terminal User"
