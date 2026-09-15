@@ -1,0 +1,29 @@
+baseURL = 'https://your-vercel-url.vercel.app/'
+languageCode = 'en-us'
+title = 'My Minimal Blog'
+theme = 'hugo-bearblog'
+
+[params]
+  # The description of your site.
+  description = "A very minimal blog written from the terminal."
+  
+  # The text that shows in the header.
+  title = "My Minimal Blog"
+  
+  # Optional author info
+  author = "Terminal User"
+
+  # Since terminal browsers don't do CSS images/backgrounds,
+  # keeping everything purely text-based ensures perfect lynx/w3m support.
+  hide_reply_by_email = true
+
+[menu]
+  # Add terminal-friendly navigation links
+  [[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    name = "Blog"
+    url = "/blog/"
+    weight = 2
