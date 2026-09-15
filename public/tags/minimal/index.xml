@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Minimal on My Minimal Blog</title>
+    <link>http://localhost:1313/tags/minimal/</link>
+    <description>Recent content in Minimal on My Minimal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 15 Sep 2026 17:30:00 +0530</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/minimal/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My First Terminal Post</title>
+      <link>http://localhost:1313/blog/first-post/</link>
+      <pubDate>Tue, 15 Sep 2026 17:30:00 +0530</pubDate>
+      <guid>http://localhost:1313/blog/first-post/</guid>
+      <description>Why I chose this stack I wanted a blog that I could write from the comfort of my terminal. No Javascript, no heavy frameworks, just pure markdown and HTML.&#xA;Features of this setup:&#xA;Zero javascript (0 bytes) Perfect rendering in w3m and lynx Instantly deployed to Vercel via Git Fast enough to compile 10,000 posts in milliseconds Here&amp;rsquo;s an example of some code, which renders perfectly as text:&#xA;git add .</description>
+    </item>
+  </channel>
+</rss>
