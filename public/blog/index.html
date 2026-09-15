@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
-    <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+    <title>prnvdsi-blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { 
@@ -34,10 +34,10 @@
     <td width="10%"></td>
     <td width="80%">
         <table class="hnmain" border="0" cellpadding="0" cellspacing="0" width="100%">
-            <!-- Header -->
+            
             <tr>
                 <td class="header">
-                    <span class="header-title"><a href="/">{{ .Site.Title }}</a></span>
+                    <span class="header-title"><a href="/">prnvdsi-blog</a></span>
                     <span class="sep">/</span>
                     <a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">github</a>
                     <span class="sep">/</span>
@@ -48,13 +48,43 @@
                     <a href="https://pranavdesai.vercel.app/" target="_blank" rel="noopener noreferrer">portfolio</a>
                 </td>
             </tr>
-            <!-- Main Content -->
+            
             <tr>
                 <td class="content">
-                    {{ block "main" . }}{{ end }}
+                    
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td style="padding-bottom: 15px;">
+            <h3>Blogs</h3>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table border="0" cellpadding="0" cellspacing="0">
+                
+                <tr>
+                    <td align="right" valign="top" style="padding-right: 5px;">
+                        <span class="subtext">1.</span>
+                    </td>
+                    <td valign="top">
+                        <a href="/blog/first-post/">My First Terminal Post</a>
+                        <br>
+                        <span class="subtext">
+                            posted Sep 15, 2026 | 
+                            1 min read
+                        </span>
+                        <div style="height: 10px;"></div>
+                    </td>
+                </tr>
+                
+            </table>
+        </td>
+    </tr>
+</table>
+
                 </td>
             </tr>
-            <!-- Footer -->
+            
             <tr>
                 <td style="padding: 20px 0; text-align: left;">
                     <span class="subtext">Operated via Terminal. Built with Hugo.</span>

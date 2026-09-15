@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
-    <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+    <title>prnvdsi-blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { 
@@ -34,10 +34,10 @@
     <td width="10%"></td>
     <td width="80%">
         <table class="hnmain" border="0" cellpadding="0" cellspacing="0" width="100%">
-            <!-- Header -->
+            
             <tr>
                 <td class="header">
-                    <span class="header-title"><a href="/">{{ .Site.Title }}</a></span>
+                    <span class="header-title"><a href="/">prnvdsi-blog</a></span>
                     <span class="sep">/</span>
                     <a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">github</a>
                     <span class="sep">/</span>
@@ -48,13 +48,48 @@
                     <a href="https://pranavdesai.vercel.app/" target="_blank" rel="noopener noreferrer">portfolio</a>
                 </td>
             </tr>
-            <!-- Main Content -->
+            
             <tr>
                 <td class="content">
-                    {{ block "main" . }}{{ end }}
+                    
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td>
+            <h2>My First Terminal Post</h2>
+            <div class="subtext" style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 5px;">
+                posted Sep 15, 2026
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h3 id="why-i-chose-this-stack">Why I chose this stack</h3>
+<p>I wanted a blog that I could write from the comfort of my terminal.
+No Javascript, no heavy frameworks, just pure markdown and HTML.</p>
+<p><strong>Features of this setup:</strong></p>
+<ol>
+<li>Zero javascript (0 bytes)</li>
+<li>Perfect rendering in <code>w3m</code> and <code>lynx</code></li>
+<li>Instantly deployed to Vercel via Git</li>
+<li>Fast enough to compile 10,000 posts in milliseconds</li>
+</ol>
+<p>Here&rsquo;s an example of some code, which renders perfectly as text:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;New post&#34;</span>
+</span></span><span style="display:flex;"><span>git push
+</span></span></code></pre></div>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-top: 30px;">
+            <a href="/" class="subtext">&lt;&lt; back home</a>
+        </td>
+    </tr>
+</table>
+
                 </td>
             </tr>
-            <!-- Footer -->
+            
             <tr>
                 <td style="padding: 20px 0; text-align: left;">
                     <span class="subtext">Operated via Terminal. Built with Hugo.</span>
