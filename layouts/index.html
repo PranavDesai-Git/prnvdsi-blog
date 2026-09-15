@@ -1,0 +1,31 @@
+{{ define "main" }}
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td>
+            {{ .Content }}
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-top: 15px;">
+            <table border="0" cellpadding="0" cellspacing="0">
+                {{ range $index, $element := (where .Site.RegularPages "Type" "in" site.Params.mainSections) }}
+                <tr>
+                    <td align="right" valign="top" style="padding-right: 5px;">
+                        <span class="subtext">{{ add $index 1 }}.</span>
+                    </td>
+                    <td valign="top">
+                        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                        <br>
+                        <span class="subtext">
+                            posted {{ .Date.Format "Jan 02, 2006" }} | 
+                            {{ .ReadingTime }} min read
+                        </span>
+                        <div style="height: 10px;"></div>
+                    </td>
+                </tr>
+                {{ end }}
+            </table>
+        </td>
+    </tr>
+</table>
+{{ end }}
