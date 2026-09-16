@@ -2,55 +2,55 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/blog/</loc>
+    <loc>https://your-vercel-url.vercel.app/blog/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/c/</loc>
+    <loc>https://your-vercel-url.vercel.app/tags/c/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://your-vercel-url.vercel.app/categories/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/compilers/</loc>
+    <loc>https://your-vercel-url.vercel.app/tags/compilers/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/functional-programming/</loc>
+    <loc>https://your-vercel-url.vercel.app/tags/functional-programming/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/graph-reduction/</loc>
+    <loc>https://your-vercel-url.vercel.app/tags/graph-reduction/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/need-one-plus-one-built-programming-lang/</loc>
+    <loc>https://your-vercel-url.vercel.app/blog/need-one-plus-one-built-programming-lang/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/pl/</loc>
+    <loc>https://your-vercel-url.vercel.app/categories/pl/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://your-vercel-url.vercel.app/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/programming/</loc>
+    <loc>https://your-vercel-url.vercel.app/categories/programming/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://your-vercel-url.vercel.app/tags/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/categories/tech/</loc>
+    <loc>https://your-vercel-url.vercel.app/categories/tech/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/weekend-project/</loc>
+    <loc>https://your-vercel-url.vercel.app/tags/weekend-project/</loc>
     <lastmod>2026-09-16T06:12:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/minimal/</loc>
+    <loc>https://your-vercel-url.vercel.app/tags/minimal/</loc>
     <lastmod>2026-09-15T17:30:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/first-post/</loc>
+    <loc>https://your-vercel-url.vercel.app/blog/first-post/</loc>
     <lastmod>2026-09-15T17:30:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/ssg/</loc>
+    <loc>https://your-vercel-url.vercel.app/tags/ssg/</loc>
     <lastmod>2026-09-15T17:30:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/terminal/</loc>
+    <loc>https://your-vercel-url.vercel.app/tags/terminal/</loc>
     <lastmod>2026-09-15T17:30:00+05:30</lastmod>
   </url>
 </urlset>

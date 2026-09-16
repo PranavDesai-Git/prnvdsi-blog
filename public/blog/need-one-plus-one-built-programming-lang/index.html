@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
     <meta charset="utf-8">
     <title>prnvdsi-blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,6 +61,8 @@
         .content { padding: 0 0 40px 0; overflow-wrap: break-word; word-wrap: break-word; }
         .subtext { font-size: 12pt; color: var(--nav-link); }
         
+        img { max-width: 100%; height: auto; display: block; }
+        
         td { max-width: 100vw; }
         
         pre {
@@ -98,29 +100,25 @@
     </style>
 </head>
 <body>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr>
-    <td width="10%"></td>
-    <td width="80%">
-        <table class="hnmain" border="0" cellpadding="0" cellspacing="0" width="100%">
+<table class="hnmain" border="0" cellpadding="0" cellspacing="0" width="100%">
+    
+    <tr>
+        <td class="header">
+            <span class="header-title"><a href="/">prnvdsi-blog</a></span>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">github</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">linkedin</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="https://x.com/prnvdsi" target="_blank" rel="noopener noreferrer">twitter</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="https://pranavdesai.vercel.app/" target="_blank" rel="noopener noreferrer">portfolio</a>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="content">
             
-            <tr>
-                <td class="header">
-                    <span class="header-title"><a href="/">prnvdsi-blog</a></span>
-                    <span class="sep" aria-hidden="true">/</span>
-                    <a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">github</a>
-                    <span class="sep" aria-hidden="true">/</span>
-                    <a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">linkedin</a>
-                    <span class="sep" aria-hidden="true">/</span>
-                    <a href="https://x.com/prnvdsi" target="_blank" rel="noopener noreferrer">twitter</a>
-                    <span class="sep" aria-hidden="true">/</span>
-                    <a href="https://pranavdesai.vercel.app/" target="_blank" rel="noopener noreferrer">portfolio</a>
-                </td>
-            </tr>
-            
-            <tr>
-                <td class="content">
-                    
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
         <td>
@@ -374,18 +372,14 @@ so I had to test it out. I ran a benchmark.</p>
     </tr>
 </table>
 
-                </td>
-            </tr>
-            
-            <tr>
-                <td style="padding: 20px 0; text-align: left;">
-                    <span class="subtext">Operated via Terminal. Built with Hugo.</span>
-                </td>
-            </tr>
-        </table>
-    </td>
-    <td width="10%"></td>
-  </tr>
+        </td>
+    </tr>
+    
+    <tr>
+        <td style="padding: 20px 0; text-align: left;">
+            <span class="subtext">Operated via Terminal. Built with Hugo.</span>
+        </td>
+    </tr>
 </table>
 </body>
 </html>

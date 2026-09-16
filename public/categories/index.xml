@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on prnvdsi-blog</title>
-    <link>http://localhost:1313/categories/</link>
+    <link>https://your-vercel-url.vercel.app/categories/</link>
     <description>Recent content in Categories on prnvdsi-blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 16 Sep 2026 06:12:00 +0530</lastBuildDate>
-    <atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://your-vercel-url.vercel.app/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>PL</title>
-      <link>http://localhost:1313/categories/pl/</link>
+      <link>https://your-vercel-url.vercel.app/categories/pl/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
-      <guid>http://localhost:1313/categories/pl/</guid>
+      <guid>https://your-vercel-url.vercel.app/categories/pl/</guid>
       <description></description>
     </item>
     <item>
       <title>Programming</title>
-      <link>http://localhost:1313/categories/programming/</link>
+      <link>https://your-vercel-url.vercel.app/categories/programming/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
-      <guid>http://localhost:1313/categories/programming/</guid>
+      <guid>https://your-vercel-url.vercel.app/categories/programming/</guid>
       <description></description>
     </item>
     <item>
       <title>Tech</title>
-      <link>http://localhost:1313/categories/tech/</link>
+      <link>https://your-vercel-url.vercel.app/categories/tech/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
-      <guid>http://localhost:1313/categories/tech/</guid>
+      <guid>https://your-vercel-url.vercel.app/categories/tech/</guid>
       <description></description>
     </item>
   </channel>

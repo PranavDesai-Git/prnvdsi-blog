@@ -1,73 +1,135 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
     <meta charset="utf-8">
     <title>404</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A very minimal blog written from the terminal.">
     <style>
+        :root {
+            color-scheme: dark;
+            --bg: #000000;
+            --text: #cccccc;
+            --link: #5f87af;
+            --link-hover: #87afd7;
+            --nav-link: #767676;
+            --nav-hover: #aaaaaa;
+            --nav-sep: #444444;
+            --title: #8a8a8a;
+        }
+        @media (prefers-color-scheme: light) {
+            :root {
+                color-scheme: light;
+                --bg: #ffffff;
+                --text: #222222;
+                --link: #0055aa;
+                --link-hover: #003388;
+                --nav-link: #666666;
+                --nav-hover: #222222;
+                --nav-sep: #cccccc;
+                --title: #555555;
+            }
+            .highlight {
+                filter: invert(1) hue-rotate(180deg);
+            }
+            .highlight pre {
+                border-color: #dddddd;  
+            }
+        }
+        
         body { 
             font-family: Verdana, sans-serif; 
             font-size: 16.5pt; 
-            color: #cccccc; 
-            background-color: #000000; 
+            color: var(--text); 
+            background-color: var(--bg); 
             margin: 0;
             line-height: 1.6;
+            overflow-x: hidden;
         }
-        a { color: #5f87af; text-decoration: none; }
-        a:hover { text-decoration: underline; color: #87afd7; }
-        .hnmain { background-color: #000000; width: 100%; max-width: 65ch; margin: auto; }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { text-decoration: underline; color: var(--link-hover); }
+        
+        .hnmain { background-color: var(--bg); width: 100%; max-width: 65ch; margin: auto; table-layout: fixed; }
         @media only screen and (max-width: 750px) { .hnmain { width: 90%; } }
         
         .header { padding: 60px 0 40px 0; }
-        .header a { color: #767676; text-decoration: none; font-size: 14pt; padding: 0 8px; }
-        .header a:hover { color: #aaaaaa; }
-        .header .sep { color: #444444; }
-        .header-title a { color: #8a8a8a; padding-left: 0; }
+        .header a { color: var(--nav-link); text-decoration: none; font-size: 14pt; padding: 0 8px; }
+        .header a:hover { color: var(--nav-hover); }
+        .header .sep { color: var(--nav-sep); }
+        .header-title a { color: var(--title); padding-left: 0; }
         
-        .content { padding: 0 0 40px 0; }
-        .subtext { font-size: 12pt; color: #767676; }
+        .content { padding: 0 0 40px 0; overflow-wrap: break-word; word-wrap: break-word; }
+        .subtext { font-size: 12pt; color: var(--nav-link); }
+        
+        img { max-width: 100%; height: auto; display: block; }
+        
+        td { max-width: 100vw; }
+        
+        pre {
+            padding: 15px 0;
+            background-color: transparent !important;
+            overflow-x: auto;
+            max-width: 100%;
+            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+            tab-size: 4;
+            -moz-tab-size: 4;
+            line-height: 1;
+            white-space: pre;
+            word-wrap: normal;
+            overflow-wrap: normal;
+        }
+        .highlight {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .highlight pre {
+            padding: 15px;
+            border: 4px double var(--text);
+            border-radius: 0;
+        }
+        code, pre code {
+            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+            background-color: transparent !important;
+            tab-size: 4;
+            -moz-tab-size: 4;
+            line-height: 1;
+            white-space: pre;
+            word-wrap: normal;
+            overflow-wrap: normal;
+        }
     </style>
 </head>
 <body>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr>
-    <td width="10%"></td>
-    <td width="80%">
-        <table class="hnmain" border="0" cellpadding="0" cellspacing="0" width="100%">
+<table class="hnmain" border="0" cellpadding="0" cellspacing="0" width="100%">
+    
+    <tr>
+        <td class="header">
+            <span class="header-title"><a href="/">prnvdsi-blog</a></span>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">github</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">linkedin</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="https://x.com/prnvdsi" target="_blank" rel="noopener noreferrer">twitter</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="https://pranavdesai.vercel.app/" target="_blank" rel="noopener noreferrer">portfolio</a>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="content">
             
-            <tr>
-                <td class="header">
-                    <span class="header-title"><a href="/">prnvdsi-blog</a></span>
-                    <span class="sep" aria-hidden="true">/</span>
-                    <a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">github</a>
-                    <span class="sep" aria-hidden="true">/</span>
-                    <a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">linkedin</a>
-                    <span class="sep" aria-hidden="true">/</span>
-                    <a href="https://x.com/prnvdsi" target="_blank" rel="noopener noreferrer">twitter</a>
-                    <span class="sep" aria-hidden="true">/</span>
-                    <a href="https://pranavdesai.vercel.app/" target="_blank" rel="noopener noreferrer">portfolio</a>
-                </td>
-            </tr>
-            
-            <tr>
-                <td class="content">
-                    
 <h1>404</h1>
 <h2>ʕノ•ᴥ•ʔノ ︵ ┻━┻</h2>
 
-                </td>
-            </tr>
-            
-            <tr>
-                <td style="padding: 20px 0; text-align: left;">
-                    <span class="subtext">Operated via Terminal. Built with Hugo.</span>
-                </td>
-            </tr>
-        </table>
-    </td>
-    <td width="10%"></td>
-  </tr>
+        </td>
+    </tr>
+    
+    <tr>
+        <td style="padding: 20px 0; text-align: left;">
+            <span class="subtext">Operated via Terminal. Built with Hugo.</span>
+        </td>
+    </tr>
 </table>
 </body>
 </html>
