@@ -326,9 +326,15 @@ so we update our Node to:</p>
 </span></span></code></pre></div><p>we have nativeFuncs which point to our c funcs and closures which are user defined funcs in our lang composed of nodes</p>
 <p>SO. we have:</p>
 <ul>
-<li>A Memory Allocator</li>
-<li>A Environment table that holds both our vars, c funcs and userdefined funcs</li>
-<li>An evaluator that just walks down the the program recursively and reduces them using env lookup</li>
+<li>
+<p>A Memory Allocator</p>
+</li>
+<li>
+<p>A Environment table that holds both our vars, c funcs and userdefined funcs</p>
+</li>
+<li>
+<p>An evaluator that just walks down the the program recursively and reduces them using env lookup</p>
+</li>
 </ul>
 <blockquote>
 <p>lets execute our first program!!</p>
@@ -337,8 +343,45 @@ so we update our Node to:</p>
 <p>what better progrm to test than fibonacci sequence!</p>
 <p>So I wrote the program. typed in fib(5).</p>
 <p>and&hellip;</p>
+<p><strong>IT CRASHED</strong></p>
+<hr>
+<h3 id="upgrading-the-memory-allocator">UPGRADING THE MEMORY ALLOCATOR</h3>
+<p>why? because our fib(5) spawned 13k nodes. but our allocator size is only 1024 nodes total!
+You might think &ldquo;okay its obvious, reallocate the block and grow the size. have it be a dynamic array&rdquo;
+and thats exactly where the problem is. the thing is, all of our nodes are pointing to these memory blocks.
+when we perform a reallocation with an increased size sometimes the operating system assignes the block into a new slot!
+Completely breaking all of our pointers causing a segfault!</p>
+<p>how do we tackle this problem?</p>
+<blockquote>
+<p>By chaining multiple allocators togeather!</p>
+</blockquote>
+<p>we can build a linked list of our allocated blocks. when we run out of space in one block we just allocate a new one and point to it! we dont have to move any data!</p>
+<p>this is called a chunk allocator! each of our blocks are defined as a chunk that store the memory and we can chian them togeather like a linkedlist with a next pointer.</p>
+<p>so we had to upgrade our allocator to a chunk allocator. now a chunk can be defined like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> Chunk {
+</span></span><span style="display:flex;"><span>    Node nodes[CHUNK_SIZE];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> Chunk <span style="color:#f92672">*</span>next;
+</span></span><span style="display:flex;"><span>} Chunk;
+</span></span></code></pre></div><p>we can keep track of this by using a current and a first!(basically a head and a tail of an LL)</p>
+<p>we have:</p>
+<ul>
+<li>
+<p>A Chunk Memory Allocator (new)</p>
+</li>
+<li>
+<p>A Environment table that holds both our vars, c funcs and userdefined funcs</p>
+</li>
+<li>
+<p>An evaluator that just walks down the the program recursively and reduces them using env lookup</p>
+</li>
+</ul>
+<blockquote>
+<p>lets execute our first program again</p>
+</blockquote>
+<p>and&hellip;</p>
 <p><strong>It works!</strong></p>
-<p>we get the result 5! 3+2 is 5. but something weird happened. it was using 1.32 mb of memory.
+<p>we get the result 5! 3+2 is 5.</p>
+<p>but something weird happened. it was using 1.32 mb of memory.
 Thats weird, because fib(5) isnt a complex operation.</p>
 <p>so I rean fib(10)
 it took 40 mb of ram !!
@@ -362,6 +405,52 @@ so I had to test it out. I ran a benchmark.</p>
          -----------------------------------
          5    10        20                  40
 </code></pre><p>fib(40) literally took 12+ GIGABYTES of memory. why? because it spawns approximately 1 Billion nodes.</p>
+<p>The problem is. we are allocating nodes but we are never freeing them once their use is over. This is causing us to allocate more and more memory.</p>
+<p>To tackle this problem I had to build a garbage collector.</p>
+<hr>
+<h3 id="building-the-garbage-collector">BUILDING THE GARBAGE COLLECTOR</h3>
+<p>what does it mean to collect garbage?
+when we evaluate 1+1+1 the evaluator does this:</p>
+<ul>
+<li>
+<ol>
+<li>Builds the ast</li>
+</ol>
+</li>
+</ul>
+<pre tabindex="0"><code>    (+)
+    / \
+   (1)(+)
+      / \
+     (1)(1)
+</code></pre><ul>
+<li>
+<ol start="2">
+<li>Evaluates left. Left is already a literal. moves on to right</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>Right is a function. so it gets evaluated first. and we mutate the tree.</li>
+</ol>
+</li>
+</ul>
+<pre tabindex="0"><code>    (+)
+    / \
+  (1) (2)
+</code></pre><blockquote>
+<p>But what happens to the two 1s?</p>
+</blockquote>
+<p>They are left on the allocator! they are never freed till the end of the program! that is exactly the problem.</p>
+<p>what we need our allocator to do is just walk through our chunk and mark what needs to be preserved and what dont.</p>
+<p>Now if you notice, when a node is a literal its children dont need to be preserved! we can reuse these free nodes!</p>
+<p>what we could do is once we mutate to a literal we just null out both the children and so those are never reached by the garbage collector never giving them a chance to be marked!</p>
+<p>this is called the mark phase, the garbage collector starts from root and starts marking everything it encounters.</p>
+<p>once marking is done we have the garbage collector go through our chunks and just check if a node is not marked and add it to a linked list called free list.</p>
+<p>this free list is used when allocating a new node!</p>
+<p>if freeList is empty ONLY THEN will we allocate a new node on top.
+otherwise we just pop the head, and allocate the node at the memory address of head!</p>
+<p>This lets us recycle our nodes effectively!!</p>
 
         </td>
     </tr>

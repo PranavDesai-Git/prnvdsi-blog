@@ -295,8 +295,11 @@ struct Node {
 we have nativeFuncs which point to our c funcs and closures which are user defined funcs in our lang composed of nodes
 
 SO. we have:
+
 - A Memory Allocator 
+
 - A Environment table that holds both our vars, c funcs and userdefined funcs
+
 - An evaluator that just walks down the the program recursively and reduces them using env lookup
 
 > lets execute our first program!!
@@ -311,9 +314,54 @@ So I wrote the program. typed in fib(5).
 and...
 
 
+**IT CRASHED**
+
+---
+### UPGRADING THE MEMORY ALLOCATOR
+
+why? because our fib(5) spawned 13k nodes. but our allocator size is only 1024 nodes total!
+You might think "okay its obvious, reallocate the block and grow the size. have it be a dynamic array"
+and thats exactly where the problem is. the thing is, all of our nodes are pointing to these memory blocks.
+when we perform a reallocation with an increased size sometimes the operating system assignes the block into a new slot!
+Completely breaking all of our pointers causing a segfault!
+
+how do we tackle this problem? 
+
+> By chaining multiple allocators togeather!
+
+we can build a linked list of our allocated blocks. when we run out of space in one block we just allocate a new one and point to it! we dont have to move any data!
+
+this is called a chunk allocator! each of our blocks are defined as a chunk that store the memory and we can chian them togeather like a linkedlist with a next pointer.
+
+so we had to upgrade our allocator to a chunk allocator. now a chunk can be defined like this:
+
+```C
+typedef struct Chunk {
+    Node nodes[CHUNK_SIZE];
+    struct Chunk *next;
+} Chunk;
+```
+
+we can keep track of this by using a current and a first!(basically a head and a tail of an LL)
+
+we have:
+
+- A Chunk Memory Allocator (new) 
+
+- A Environment table that holds both our vars, c funcs and userdefined funcs
+
+- An evaluator that just walks down the the program recursively and reduces them using env lookup
+
+> lets execute our first program again
+
+and...
+
+
 **It works!**
 
-we get the result 5! 3+2 is 5. but something weird happened. it was using 1.32 mb of memory.
+we get the result 5! 3+2 is 5. 
+
+but something weird happened. it was using 1.32 mb of memory.
 Thats weird, because fib(5) isnt a complex operation.
 
 so I rean fib(10)
@@ -342,3 +390,57 @@ RAM (GB) vs fib(n)
 ```
 
 fib(40) literally took 12+ GIGABYTES of memory. why? because it spawns approximately 1 Billion nodes.
+
+The problem is. we are allocating nodes but we are never freeing them once their use is over. This is causing us to allocate more and more memory.
+
+To tackle this problem I had to build a garbage collector.
+
+---
+### BUILDING THE GARBAGE COLLECTOR
+
+what does it mean to collect garbage?
+when we evaluate 1+1+1 the evaluator does this:
+
+- 1. Builds the ast
+```
+    (+)
+    / \
+   (1)(+)
+      / \
+     (1)(1)
+```
+
+- 2. Evaluates left. Left is already a literal. moves on to right
+
+- 3. Right is a function. so it gets evaluated first. and we mutate the tree.
+
+```
+    (+)
+    / \
+  (1) (2)
+```
+
+> But what happens to the two 1s?
+
+They are left on the allocator! they are never freed till the end of the program! that is exactly the problem.
+
+what we need our allocator to do is just walk through our chunk and mark what needs to be preserved and what dont.
+
+Now if you notice, when a node is a literal its children dont need to be preserved! we can reuse these free nodes!
+
+what we could do is once we mutate to a literal we just null out both the children and so those are never reached by the garbage collector never giving them a chance to be marked!
+
+this is called the mark phase, the garbage collector starts from root and starts marking everything it encounters.
+
+once marking is done we have the garbage collector go through our chunks and just check if a node is not marked and add it to a linked list called free list.
+
+this free list is used when allocating a new node!
+
+
+if freeList is empty ONLY THEN will we allocate a new node on top.
+otherwise we just pop the head, and allocate the node at the memory address of head!
+
+This lets us recycle our nodes effectively!!
+
+
+
