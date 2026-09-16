@@ -322,6 +322,7 @@ so I had to test it out. I ran a benchmark.
 
 ```
 RAM (GB) vs fib(n)
+
 12.29 GB ┼
 11.34 GB ┤    				             ╭───
 10.40 GB ┤			              ╭──────╯
