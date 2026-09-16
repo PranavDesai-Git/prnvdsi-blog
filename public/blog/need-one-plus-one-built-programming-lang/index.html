@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <title>prnvdsi-blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A deep dive into why I spent a weekend building an AST parser from scratch just todo basic math.">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #000000;
+            --text: #cccccc;
+            --link: #5f87af;
+            --link-hover: #87afd7;
+            --nav-link: #767676;
+            --nav-hover: #aaaaaa;
+            --nav-sep: #444444;
+            --title: #8a8a8a;
+        }
+        @media (prefers-color-scheme: light) {
+            :root {
+                color-scheme: light;
+                --bg: #ffffff;
+                --text: #222222;
+                --link: #0055aa;
+                --link-hover: #003388;
+                --nav-link: #666666;
+                --nav-hover: #222222;
+                --nav-sep: #cccccc;
+                --title: #555555;
+            }
+            .highlight {
+                filter: invert(1) hue-rotate(180deg);
+            }
+            .highlight pre {
+                border-color: #dddddd;  
+            }
+        }
+        
+        body { 
+            font-family: Verdana, sans-serif; 
+            font-size: 16.5pt; 
+            color: var(--text); 
+            background-color: var(--bg); 
+            margin: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { text-decoration: underline; color: var(--link-hover); }
+        
+        .hnmain { background-color: var(--bg); width: 100%; max-width: 65ch; margin: auto; table-layout: fixed; }
+        @media only screen and (max-width: 750px) { .hnmain { width: 90%; } }
+        
+        .header { padding: 60px 0 40px 0; }
+        .header a { color: var(--nav-link); text-decoration: none; font-size: 14pt; padding: 0 8px; }
+        .header a:hover { color: var(--nav-hover); }
+        .header .sep { color: var(--nav-sep); }
+        .header-title a { color: var(--title); padding-left: 0; }
+        
+        .content { padding: 0 0 40px 0; overflow-wrap: break-word; word-wrap: break-word; }
+        .subtext { font-size: 12pt; color: var(--nav-link); }
+        
+        pre {
+            padding: 15px 0;
+            background-color: transparent !important;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        .highlight {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .highlight pre {
+            padding: 15px;
+            border: 4px double var(--text);
+            border-radius: 0;
+        }
+        code, pre code {
+            font-family: monospace;
+            background-color: transparent !important;
+        }
+    </style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td width="10%"></td>
+    <td width="80%">
+        <table class="hnmain" border="0" cellpadding="0" cellspacing="0" width="100%">
+            
+            <tr>
+                <td class="header">
+                    <span class="header-title"><a href="/">prnvdsi-blog</a></span>
+                    <span class="sep" aria-hidden="true">/</span>
+                    <a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">github</a>
+                    <span class="sep" aria-hidden="true">/</span>
+                    <a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">linkedin</a>
+                    <span class="sep" aria-hidden="true">/</span>
+                    <a href="https://x.com/prnvdsi" target="_blank" rel="noopener noreferrer">twitter</a>
+                    <span class="sep" aria-hidden="true">/</span>
+                    <a href="https://pranavdesai.vercel.app/" target="_blank" rel="noopener noreferrer">portfolio</a>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="content">
+                    
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td>
+            <h2>Needed 1&#43;1, Built a Functional Programming Language</h2>
+            <div class="subtext" style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 5px;">
+                posted Sep 16, 2026
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h3 id="the-data-structures-assignment">THE DATA STRUCTURES ASSIGNMENT</h3>
+<p>So, My prof taught us how to convert an expression into a binary tree.
+Naturally, I wondered how we would evaluate such trees. I concluded you
+would recursively check the root node, the rootnodes are operators and left
+and right are its operands. once you evaluate stuff and you can replace the
+current root node with evaluated value.</p>
+<p>So I assigned myself to work of writing an evaluator for such expressions.
+I constructed the tree for 1+1+1 which could translate to</p>
+<pre tabindex="0"><code>
+     (+)
+    /   \
+  (+)   (1)
+  / \
+(1) (1)
+</code></pre><p>And so I needed to solve this. pretty easy you would think. and then the functional programming brain virus took over.</p>
+<p>(´･ω･`)</p>
+<p>so then I realized we are just performing actions based on the current expressions so I defined them as a sum type of all the arithematic operations</p>
+<pre tabindex="0"><code>Expr ::= Add Expr Expr
+       | Sub Expr Expr
+       | Mul Expr Expr
+       | Div Expr Expr
+       | Val Expr Expr
+</code></pre><p>and this Expr takes left and right as arguments. if left is a literal it is taken as an argument and if its an operator it is evaluated to a literal first
+And then.</p>
+<p>I had an epipheny
+(|&lsquo;o&rsquo;|).</p>
+<p>We dont need ADD/SUB/MUL/DIV the evaluator doesnt need to know what it is evaluating as long as it takes two Exprs and returns an Expr</p>
+<p>so now it can be rewritten as:</p>
+<pre tabindex="0"><code>Expr ::= Func Expr Expr
+       | Val Expr Expr
+</code></pre><p>So now our evaluator&rsquo;s job is pretty simple. just:</p>
+<ul>
+<li>See Node</li>
+<li>If its a func, go to left</li>
+<li>If left is a literal use that as arg</li>
+<li>If not evaluate till you get literal</li>
+<li>See right</li>
+<li>Do the same</li>
+<li>Both are literals</li>
+<li>Replace root func with literal</li>
+</ul>
+<p>ヽ(´ー｀)ﾉ</p>
+<h3 id="oh-wait-you-can-add-vars-to-this-it-wouldnt-be-a-big-change">Oh wait. you can add vars to this. it wouldnt be a big change</h3>
+<p>( ﾟヮﾟ)</p>
+<p>Should be a one tiny addition no problem whatsoever. I mean variables are just a hashtable lookup that hold an Expr</p>
+<p>oh wait. C doesnt have built in hashtables.</p>
+<p>hmmm.（´-`）.｡oO( &hellip; )</p>
+<blockquote>
+<p>Lets just implement a hashtable. its small change! m9(・∀・)</p>
+</blockquote>
+<p>soo&hellip;.how does that work? I never implemeneted it before.
+I look it up on google like a caveman and find this amazing text</p>
+<p><a href="https://benhoyt.com/writings/hash-table-in-c/" target="_blank" rel="noopener noreferrer">How to implement a hash table (in C)</a>
+</p>
+<p>It was pretty easy to implement. Its not that difficult once you get it.
+(tbf my implementation is pretty basic I dont have those Red Black self balacncing BST its just a linkedlist on collisions, Though I gotta add that to my todo I will implement those)</p>
+<p>So now we just got a little change in the Expr:</p>
+<pre tabindex="0"><code>Expr ::= Func Expr Expr
+       | Val 
+       | Var 
+</code></pre><hr>
+<h3 id="actually-implementing-it-in-c">Actually implementing it in C</h3>
+<p>alright  then time to code in C with this plan, seems simple enough. just a tagged union.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">enum</span> {
+</span></span><span style="display:flex;"><span>    LITERAL,
+</span></span><span style="display:flex;"><span>    VAR,
+</span></span><span style="display:flex;"><span>    CALL,
+</span></span><span style="display:flex;"><span>} NodeType;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> Node {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> Node <span style="color:#f92672">*</span>left;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> Node <span style="color:#f92672">*</span>right;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">union</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> literal;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>var;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>call;
+</span></span><span style="display:flex;"><span>    } data;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    NodeType type;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>Right now the mem size of each ( assuming 64 bit system) is:</p>
+<pre tabindex="0"><code>+------------------------+----------+
+| Field                  | Size     |
++------------------------+----------+
+| Left Pointer           |  8 bytes |
+| Right Pointer          |  8 bytes |
+| Data                   |  8 bytes |
+| Type                   |  4 bytes |
+| Padding                |  4 bytes |
++------------------------+----------+
+| Total                  | 32 bytes |
++------------------------+----------+
+</code></pre><p>32 Bytes might not seem like a lot but we gotta think how this is being used. for evaluating 1+1 we would need 3 nodes.</p>
+<ul>
+<li>1 for the operator</li>
+<li>2 for the operands</li>
+</ul>
+<p>That would be 32 x 3= <strong>96 bytes</strong> to evaluate 1+1.</p>
+<p>But heres the thing. when you malloc() a node malloc adds a header which takes up <strong>16 bytes</strong> of memory!
+bringing our total per node to 32(node size) + 16 (malloc header) = <strong>48 bytes!</strong></p>
+<p>if we add recursion or any sort of more complex functions other than 1+1 we will be looking at hundreds of thousands to even billions of nodes.</p>
+<p>malloc also sends a request to the operating system everythime we want to allocate a node. if we are doing this billions of times this is just not sustainable.</p>
+<p>we clearly need a custom allocator.</p>
+<p>So, I look up what allocator we can use, again like a caveman, And I decide I will be writing an Arena Allocator</p>
+<hr>
+<h3 id="arena-allocator">Arena Allocator</h3>
+<p>The idea of an arena allocator is pretty simple. all you do is at the start take a big chunk of memroy, allocate stuff yourself and then at then end just free the entire block</p>
+<p>So my arena allocator would just be:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>    <span style="color:#75715e">#define SIZE 1024
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Node arena[SIZE]
+</span></span></code></pre></div><p>and when we allocate a node we can keep track of a top using</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> top <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span></code></pre></div><p>when we want to allocate a node we just return</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>    <span style="color:#f92672">&amp;</span>arena[top<span style="color:#f92672">++</span>];
+</span></span></code></pre></div><p>I wrote the allocator and then defined a c func:</p>
+<p>Once our simple allocator was done we could easily allocate nodes by calling</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>Node <span style="color:#f92672">*</span><span style="color:#a6e22e">allocNode</span>();
+</span></span></code></pre></div><p>It was great! Now moving on to actually calling the functions.
+Then I realized</p>
+<blockquote>
+<p>We can store the vars and funcs into the same struct to get higherorder functions for free! (°◇°)</p>
+</blockquote>
+<p>Remember the hashtable we created earlier? its time to upgrade it.</p>
+<hr>
+<h3 id="making-the-env-table">Making the Env Table</h3>
+
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-top: 30px;">
+            <a href="/" class="subtext">&lt;&lt; back home</a>
+        </td>
+    </tr>
+</table>
+
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="padding: 20px 0; text-align: left;">
+                    <span class="subtext">Operated via Terminal. Built with Hugo.</span>
+                </td>
+            </tr>
+        </table>
+    </td>
+    <td width="10%"></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,205 @@
+---
+title: "Needed 1+1, Built a Functional Programming Language"
+date: 2026-09-16T06:12:00+05:30
+description: "A deep dive into why I spent a weekend building an AST parser from scratch just todo basic math."
+tags: ["compilers", "c", "weekend-project", "functional programming", "graph reduction"]
+categories: ["programming", "tech", "PL"]
+draft: false
+---
+
+### THE DATA STRUCTURES ASSIGNMENT
+
+So, My prof taught us how to convert an expression into a binary tree.
+Naturally, I wondered how we would evaluate such trees. I concluded you 
+would recursively check the root node, the rootnodes are operators and left
+and right are its operands. once you evaluate stuff and you can replace the 
+current root node with evaluated value.
+
+So I assigned myself to work of writing an evaluator for such expressions.
+I constructed the tree for 1+1+1 which could translate to 
+
+```
+
+     (+)
+    /   \
+  (+)   (1)
+  / \
+(1) (1)
+```
+
+And so I needed to solve this. pretty easy you would think. and then the functional programming brain virus took over.
+
+(´･ω･`)
+
+so then I realized we are just performing actions based on the current expressions so I defined them as a sum type of all the arithematic operations
+
+```
+Expr ::= Add Expr Expr
+       | Sub Expr Expr
+       | Mul Expr Expr
+       | Div Expr Expr
+       | Val Expr Expr
+```
+
+and this Expr takes left and right as arguments. if left is a literal it is taken as an argument and if its an operator it is evaluated to a literal first
+And then. 
+
+I had an epipheny 
+(|'o'|).
+
+We dont need ADD/SUB/MUL/DIV the evaluator doesnt need to know what it is evaluating as long as it takes two Exprs and returns an Expr
+
+so now it can be rewritten as:
+
+```
+Expr ::= Func Expr Expr
+       | Val Expr Expr
+```
+
+So now our evaluator's job is pretty simple. just:
+
+
+- See Node
+- If its a func, go to left
+- If left is a literal use that as arg
+- If not evaluate till you get literal
+- See right
+- Do the same
+- Both are literals 
+- Replace root func with literal
+
+ヽ(´ー｀)ﾉ
+### Oh wait. you can add vars to this. it wouldnt be a big change 
+( ﾟヮﾟ)	
+
+Should be a one tiny addition no problem whatsoever. I mean variables are just a hashtable lookup that hold an Expr
+
+
+
+oh wait. C doesnt have built in hashtables.
+
+hmmm.（´-`）.｡oO( ... )
+
+> Lets just implement a hashtable. its small change! m9(・∀・)
+
+soo....how does that work? I never implemeneted it before.
+I look it up on google like a caveman and find this amazing text
+
+[How to implement a hash table (in C)](https://benhoyt.com/writings/hash-table-in-c/)
+
+It was pretty easy to implement. Its not that difficult once you get it. 
+(tbf my implementation is pretty basic I dont have those Red Black self balacncing BST its just a linkedlist on collisions, Though I gotta add that to my todo I will implement those)
+
+So now we just got a little change in the Expr:
+
+```
+Expr ::= Func Expr Expr
+       | Val 
+       | Var 
+```
+
+---
+
+### Actually implementing it in C
+
+alright  then time to code in C with this plan, seems simple enough. just a tagged union.
+
+
+```C
+typedef enum {
+    LITERAL,
+    VAR,
+    CALL,
+} NodeType;
+
+struct Node {
+    struct Node *left;
+    struct Node *right;
+
+    union {
+        int literal;
+        char *var;
+        char *call;
+    } data;
+
+    NodeType type;
+};
+```
+
+
+Right now the mem size of each ( assuming 64 bit system) is:
+
+
+```
++------------------------+----------+
+| Field                  | Size     |
++------------------------+----------+
+| Left Pointer           |  8 bytes |
+| Right Pointer          |  8 bytes |
+| Data                   |  8 bytes |
+| Type                   |  4 bytes |
+| Padding                |  4 bytes |
++------------------------+----------+
+| Total                  | 32 bytes |
++------------------------+----------+
+```
+
+
+
+32 Bytes might not seem like a lot but we gotta think how this is being used. for evaluating 1+1 we would need 3 nodes.
+- 1 for the operator
+- 2 for the operands
+
+That would be 32 x 3= **96 bytes** to evaluate 1+1.
+
+But heres the thing. when you malloc() a node malloc adds a header which takes up **16 bytes** of memory!
+bringing our total per node to 32(node size) + 16 (malloc header) = **48 bytes!**
+
+if we add recursion or any sort of more complex functions other than 1+1 we will be looking at hundreds of thousands to even billions of nodes.
+
+malloc also sends a request to the operating system everythime we want to allocate a node. if we are doing this billions of times this is just not sustainable.
+
+we clearly need a custom allocator.
+
+So, I look up what allocator we can use, again like a caveman, And I decide I will be writing an Arena Allocator
+
+---
+
+### Arena Allocator
+
+
+The idea of an arena allocator is pretty simple. all you do is at the start take a big chunk of memroy, allocate stuff yourself and then at then end just free the entire block
+
+So my arena allocator would just be:
+
+```C
+    #define SIZE 1024
+    Node arena[SIZE]
+```
+
+and when we allocate a node we can keep track of a top using
+```C
+    int top = 0;
+```
+when we want to allocate a node we just return 
+```C 
+    &arena[top++];
+```
+
+I wrote the allocator and then defined a c func:
+
+Once our simple allocator was done we could easily allocate nodes by calling
+```C 
+Node *allocNode();
+```
+
+It was great! Now moving on to actually calling the functions.
+Then I realized
+
+> We can store the vars and funcs into the same struct to get higherorder functions for free! (°◇°)
+
+Remember the hashtable we created earlier? its time to upgrade it.
+
+---
+
+### Making the Env Table
