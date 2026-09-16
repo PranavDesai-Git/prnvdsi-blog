@@ -53,7 +53,7 @@ so now it can be rewritten as:
 
 ```
 Expr ::= Func Expr Expr
-       | Val Expr Expr
+       | Val 
 ```
 
 So now our evaluator's job is pretty simple. just:
@@ -119,7 +119,7 @@ struct Node {
     union {
         int literal;
         char *var;
-        char *call;
+        char *func;
     } data;
 
     NodeType type;
@@ -203,3 +203,139 @@ Remember the hashtable we created earlier? its time to upgrade it.
 ---
 
 ### Making the Env Table
+
+
+In the Env table we are storing two things. Vars and
+functions.
+
+But what are functions?
+As far as our evaluator is concerned, it is a thing
+that consumes arguments on one side and spits out a
+result on the other.
+
+```
+    (func node)
+    /         \
+ (arg 1)    (arg 2)
+ ````
+
+The initial idea was they will just be pointers to c
+funcs. But there is a huge problem with this: how do
+users write their own functions?
+When a user types code into our language, our parser
+reads text. It can't magically compile that text into
+a native C function pointer on the fly. It can only
+build an AST (a tree of nodes).
+Also, if functions are just C pointers, they
+instantly evaluate to a literal. Soo this defeats the
+purpose of higher order functions. If a function
+returns another function, you can't just return a C
+pointer back into the graph to be evaluated later.
+Thus we need a type of node that tells the evaluator
+"hey, I am a function, but my code isn't a C
+pointer,it is this tree right here." It needs to
+store the body of a function, which would evaluate
+over multiple steps. And that is a closure.
+
+Instead of a black-box C function, a closure is an
+actual node in our graph. It holds the parameter on
+one side, and the tree of operations (the body) on
+the other.
+
+```
+         (closure)
+         /        \
+ (parameter)      (body)
+                 /      \
+              (math)  (literal)
+```
+
+By making the function an actual node, we can pass it
+around, return it from other functions, and evaluate
+it step-by-step whenever we want!
+
+> Now we have functions user can define themselves without ever touching the c code!!!
+
+so now we can create our env entry as
+```C 
+typedef struct EnvEntry {
+    char *key;
+    Node *val;
+    struct EnvEntry *next;
+} EnvEntry;
+```
+
+we obtain the key using a very simple hashing function called djb2 
+obtain the key, look inside and get the val. simple.
+
+but what *is* val?
+
+val is a Node! but Node needs new premitive types for our val to work.
+so we update our Node to:
+
+```C 
+struct Node {
+    struct Node *left;
+    struct Node *right;
+
+    union {
+        int literal;
+        char *var;
+        int index;
+        char *call;
+        struct Node *closure;
+        struct Node *nativeFunc;
+    } data;
+
+    NodeType type;
+};
+```
+
+
+we have nativeFuncs which point to our c funcs and closures which are user defined funcs in our lang composed of nodes
+
+SO. we have:
+- A Memory Allocator 
+- A Environment table that holds both our vars, c funcs and userdefined funcs
+- An evaluator that just walks down the the program recursively and reduces them using env lookup
+
+> lets execute our first program!!
+
+Right now we dont have a lexer/parser yet so we can just hand construct our AST.
+
+what better progrm to test than fibonacci sequence!
+
+
+So I wrote the program. typed in fib(5).
+
+and...
+
+
+**It works!**
+
+we get the result 5! 3+2 is 5. but something weird happened. it was using 1.32 mb of memory.
+Thats weird, because fib(5) isnt a complex operation.
+
+so I rean fib(10)
+it took 40 mb of ram !!
+so I had to test it out. I ran a benchmark.
+
+```
+RAM (GB) vs fib(n)
+12.29 GB ┼
+11.34 GB ┤    				             ╭───
+10.40 GB ┤			              ╭──────╯
+ 9.45 GB ┤                  ╭─────╯
+ 8.51 GB ┤              ╭───╯
+ 7.56 GB ┤             ╭╯
+ 6.62 GB ┤            ╭╯
+ 5.67 GB ┤           ╭╯
+ 4.73 GB ┤         ╭─╯
+ 3.78 GB ┤        ╭╯
+ 2.84 GB ┤       ╭╯
+ 1.89 GB ┤      ╭╯
+ 0.95 GB ┤     ╭╯
+ 0.00 GB ┼─────╯
+         -----------------------------------
+         5    10        20                  40
+```

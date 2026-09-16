@@ -66,6 +66,9 @@
             background-color: transparent !important;
             overflow-x: auto;
             max-width: 100%;
+            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+            tab-size: 4;
+            -moz-tab-size: 4;
         }
         .highlight {
             max-width: 100%;
@@ -77,8 +80,10 @@
             border-radius: 0;
         }
         code, pre code {
-            font-family: monospace;
+            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
             background-color: transparent !important;
+            tab-size: 4;
+            -moz-tab-size: 4;
         }
     </style>
 </head>
@@ -146,7 +151,7 @@ And then.</p>
 <p>We dont need ADD/SUB/MUL/DIV the evaluator doesnt need to know what it is evaluating as long as it takes two Exprs and returns an Expr</p>
 <p>so now it can be rewritten as:</p>
 <pre tabindex="0"><code>Expr ::= Func Expr Expr
-       | Val Expr Expr
+       | Val 
 </code></pre><p>So now our evaluator&rsquo;s job is pretty simple. just:</p>
 <ul>
 <li>See Node</li>
@@ -193,7 +198,7 @@ I look it up on google like a caveman and find this amazing text</p>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">union</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> literal;
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>var;
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>call;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>func;
 </span></span><span style="display:flex;"><span>    } data;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    NodeType type;
@@ -243,7 +248,111 @@ Then I realized</p>
 <p>Remember the hashtable we created earlier? its time to upgrade it.</p>
 <hr>
 <h3 id="making-the-env-table">Making the Env Table</h3>
-
+<p>In the Env table we are storing two things. Vars and
+functions.</p>
+<p>But what are functions?
+As far as our evaluator is concerned, it is a thing
+that consumes arguments on one side and spits out a
+result on the other.</p>
+<pre tabindex="0"><code>    (func node)
+    /         \
+ (arg 1)    (arg 2)
+</code></pre><p>The initial idea was they will just be pointers to c
+funcs. But there is a huge problem with this: how do
+users write their own functions?
+When a user types code into our language, our parser
+reads text. It can&rsquo;t magically compile that text into
+a native C function pointer on the fly. It can only
+build an AST (a tree of nodes).
+Also, if functions are just C pointers, they
+instantly evaluate to a literal. Soo this defeats the
+purpose of higher order functions. If a function
+returns another function, you can&rsquo;t just return a C
+pointer back into the graph to be evaluated later.
+Thus we need a type of node that tells the evaluator
+&ldquo;hey, I am a function, but my code isn&rsquo;t a C
+pointer,it is this tree right here.&rdquo; It needs to
+store the body of a function, which would evaluate
+over multiple steps. And that is a closure.</p>
+<p>Instead of a black-box C function, a closure is an
+actual node in our graph. It holds the parameter on
+one side, and the tree of operations (the body) on
+the other.</p>
+<pre tabindex="0"><code>         (closure)
+         /        \
+ (parameter)      (body)
+                 /      \
+              (math)  (literal)
+</code></pre><p>By making the function an actual node, we can pass it
+around, return it from other functions, and evaluate
+it step-by-step whenever we want!</p>
+<blockquote>
+<p>Now we have functions user can define themselves without ever touching the c code!!!</p>
+</blockquote>
+<p>so now we can create our env entry as</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> EnvEntry {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>key;
+</span></span><span style="display:flex;"><span>    Node <span style="color:#f92672">*</span>val;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> EnvEntry <span style="color:#f92672">*</span>next;
+</span></span><span style="display:flex;"><span>} EnvEntry;
+</span></span></code></pre></div><p>we obtain the key using a very simple hashing function called djb2
+obtain the key, look inside and get the val. simple.</p>
+<p>but what <em>is</em> val?</p>
+<p>val is a Node! but Node needs new premitive types for our val to work.
+so we update our Node to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> Node {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> Node <span style="color:#f92672">*</span>left;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> Node <span style="color:#f92672">*</span>right;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">union</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> literal;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>var;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> index;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>call;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">struct</span> Node <span style="color:#f92672">*</span>closure;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">struct</span> Node <span style="color:#f92672">*</span>nativeFunc;
+</span></span><span style="display:flex;"><span>    } data;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    NodeType type;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>we have nativeFuncs which point to our c funcs and closures which are user defined funcs in our lang composed of nodes</p>
+<p>SO. we have:</p>
+<ul>
+<li>A Memory Allocator</li>
+<li>A Environment table that holds both our vars, c funcs and userdefined funcs</li>
+<li>An evaluator that just walks down the the program recursively and reduces them using env lookup</li>
+</ul>
+<blockquote>
+<p>lets execute our first program!!</p>
+</blockquote>
+<p>Right now we dont have a lexer/parser yet so we can just hand construct our AST.</p>
+<p>what better progrm to test than fibonacci sequence!</p>
+<p>So I wrote the program. typed in fib(5).</p>
+<p>and&hellip;</p>
+<p><strong>It works!</strong></p>
+<p>we get the result 5! 3+2 is 5. but something weird happened. it was using 1.32 mb of memory.
+Thats weird, because fib(5) isnt a complex operation.</p>
+<p>so I rean fib(10)
+it took 40 mb of ram !!
+so I had to test it out. I ran a benchmark.</p>
+<pre tabindex="0"><code>RAM (GB) vs fib(n)
+12.29 GB ┼
+11.34 GB ┤    				             ╭───
+10.40 GB ┤			              ╭──────╯
+ 9.45 GB ┤                  ╭─────╯
+ 8.51 GB ┤              ╭───╯
+ 7.56 GB ┤             ╭╯
+ 6.62 GB ┤            ╭╯
+ 5.67 GB ┤           ╭╯
+ 4.73 GB ┤         ╭─╯
+ 3.78 GB ┤        ╭╯
+ 2.84 GB ┤       ╭╯
+ 1.89 GB ┤      ╭╯
+ 0.95 GB ┤     ╭╯
+ 0.00 GB ┼─────╯
+         -----------------------------------
+         5    10        20                  40
+</code></pre>
         </td>
     </tr>
     <tr>
