@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ if .IsPage }}{{ .Summary }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end }}">
     <style>
         :root {
@@ -70,7 +73,7 @@
             background-color: transparent !important;
             overflow-x: auto;
             max-width: 100%;
-            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+            font-family: "JetBrains Mono", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
             tab-size: 4;
             -moz-tab-size: 4;
             line-height: 1;
@@ -88,7 +91,7 @@
             border-radius: 0;
         }
         code, pre code {
-            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+            font-family: "JetBrains Mono", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
             background-color: transparent !important;
             tab-size: 4;
             -moz-tab-size: 4;
@@ -96,6 +99,11 @@
             white-space: pre;
             word-wrap: normal;
             overflow-wrap: normal;
+        }
+        @media (max-width: 600px) {
+            pre, code, .highlight pre {
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>

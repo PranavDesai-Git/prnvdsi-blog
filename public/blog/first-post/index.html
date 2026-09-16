@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <title>prnvdsi-blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <meta name="description" content="Why I chose this stack I wanted a blog that I could write from the comfort of my terminal. No Javascript, no heavy frameworks, just pure markdown and HTML.
 Features of this setup:
 Zero javascript (0 bytes) Perfect rendering in w3m and lynx Instantly deployed to Vercel via Git Fast enough to compile 10,000 posts in milliseconds Here&rsquo;s an example of some code, which renders perfectly as text:
@@ -73,7 +76,7 @@ git add .">
             background-color: transparent !important;
             overflow-x: auto;
             max-width: 100%;
-            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+            font-family: "JetBrains Mono", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
             tab-size: 4;
             -moz-tab-size: 4;
             line-height: 1;
@@ -91,7 +94,7 @@ git add .">
             border-radius: 0;
         }
         code, pre code {
-            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+            font-family: "JetBrains Mono", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
             background-color: transparent !important;
             tab-size: 4;
             -moz-tab-size: 4;
@@ -99,6 +102,11 @@ git add .">
             white-space: pre;
             word-wrap: normal;
             overflow-wrap: normal;
+        }
+        @media (max-width: 600px) {
+            pre, code, .highlight pre {
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
