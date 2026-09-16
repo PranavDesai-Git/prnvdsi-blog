@@ -395,25 +395,25 @@ Thats weird, because fib(5) isnt a complex operation.</p>
 <p>so I rean fib(10)
 it took 40 mb of ram !!
 so I had to test it out. I ran a benchmark.</p>
-<pre tabindex="0"><code>RAM (GB) vs fib(n)
-
-12.29 GB ┤  
-11.34 GB ┤    				             ╭───
-10.40 GB ┤			              ╭──────╯
- 9.45 GB ┤                  ╭─────╯
- 8.51 GB ┤              ╭───╯
- 7.56 GB ┤             ╭╯
- 6.62 GB ┤            ╭╯
- 5.67 GB ┤           ╭╯
- 4.73 GB ┤         ╭─╯
- 3.78 GB ┤        ╭╯
- 2.84 GB ┤       ╭╯
- 1.89 GB ┤      ╭╯
- 0.95 GB ┤     ╭╯
- 0.00 GB ┼─────╯
-         -----------------------------------
-         5    10        20                  40
-</code></pre><p>fib(40) literally took 12+ GIGABYTES of memory. why? because it spawns approximately 1 Billion nodes.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>RAM (GB) vs fib(n)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>12.29 GB ┤  
+</span></span><span style="display:flex;"><span>11.34 GB ┤                               ╭───
+</span></span><span style="display:flex;"><span>10.40 GB ┤                        ╭──────╯
+</span></span><span style="display:flex;"><span> 9.45 GB ┤                  ╭─────╯
+</span></span><span style="display:flex;"><span> 8.51 GB ┤              ╭───╯
+</span></span><span style="display:flex;"><span> 7.56 GB ┤             ╭╯
+</span></span><span style="display:flex;"><span> 6.62 GB ┤            ╭╯
+</span></span><span style="display:flex;"><span> 5.67 GB ┤           ╭╯
+</span></span><span style="display:flex;"><span> 4.73 GB ┤         ╭─╯
+</span></span><span style="display:flex;"><span> 3.78 GB ┤        ╭╯
+</span></span><span style="display:flex;"><span> 2.84 GB ┤       ╭╯
+</span></span><span style="display:flex;"><span> 1.89 GB ┤      ╭╯
+</span></span><span style="display:flex;"><span> 0.95 GB ┤     ╭╯
+</span></span><span style="display:flex;"><span> 0.00 GB ┼─────╯
+</span></span><span style="display:flex;"><span>         -----------------------------------
+</span></span><span style="display:flex;"><span>         5    10        20                  40
+</span></span></code></pre></div><p>fib(40) literally took 12+ GIGABYTES of memory. why? because it spawns approximately 1 Billion nodes.</p>
 <p>The problem is. we are allocating nodes but we are never freeing them once their use is over. This is causing us to allocate more and more memory.</p>
 <p>To tackle this problem I had to build a garbage collector.</p>
 <hr>

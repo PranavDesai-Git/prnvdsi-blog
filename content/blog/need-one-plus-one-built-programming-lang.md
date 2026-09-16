@@ -384,12 +384,12 @@ so I rean fib(10)
 it took 40 mb of ram !!
 so I had to test it out. I ran a benchmark.
 
-```
+```text
 RAM (GB) vs fib(n)
 
 12.29 GB ┤  
-11.34 GB ┤    				             ╭───
-10.40 GB ┤			              ╭──────╯
+11.34 GB ┤                               ╭───
+10.40 GB ┤                        ╭──────╯
  9.45 GB ┤                  ╭─────╯
  8.51 GB ┤              ╭───╯
  7.56 GB ┤             ╭╯
