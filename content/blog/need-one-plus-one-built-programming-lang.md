@@ -34,13 +34,13 @@ current root node with evaluated value.
 So I assigned myself to work of writing an evaluator for such expressions.
 I constructed the tree for 1+1+1 which could translate to 
 
-```
+```text
 
-     (+)
-    /   \
-  (+)   (1)
-  / \
-(1) (1)
+       (+)
+      /   \
+    (+)   (1)
+    / \
+  (1) (1)
 ```
 
 And so I needed to solve this. pretty easy you would think. and then the functional programming brain virus took over.
@@ -418,22 +418,22 @@ what does it mean to collect garbage?
 when we evaluate 1+1+1 the evaluator does this:
 
 - 1. Builds the ast
-```
-    (+)
-    / \
-   (1)(+)
+```text
+      (+)
       / \
-     (1)(1)
+    (1) (+)
+        / \
+      (1) (1)
 ```
 
 - 2. Evaluates left. Left is already a literal. moves on to right
 
 - 3. Right is a function. so it gets evaluated first. and we mutate the tree.
 
-```
-    (+)
-    / \
-  (1) (2)
+```text
+      (+)
+      / \
+    (1) (2)
 ```
 
 > But what happens to the two 1s?

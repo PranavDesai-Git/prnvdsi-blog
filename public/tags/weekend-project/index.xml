@@ -13,7 +13,7 @@
       <link>https://your-vercel-url.vercel.app/blog/need-one-plus-one-built-programming-lang/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
       <guid>https://your-vercel-url.vercel.app/blog/need-one-plus-one-built-programming-lang/</guid>
-      <description>THE DATA STRUCTURES ASSIGNMENT So, My prof taught us how to convert an expression into a binary tree. Naturally, I wondered how we would evaluate such trees. I concluded you would recursively check the root node, the rootnodes are operators and left and right are its operands. once you evaluate stuff and you can replace the current root node with evaluated value.&#xA;So I assigned myself to work of writing an evaluator for such expressions.</description>
+      <description>graphLang I was given a pretty straightforward data structures problem: convert an arithmetic expression into a binary tree.&#xA;Naturally, instead of stopping there, I decided to build an evaluator for it.&#xA;Then I had a thought.&#xA;What if the evaluator didn&amp;rsquo;t actually need to know what the operations were? A few days later I was implementing closures, a garbage collector, and a custom memory allocator in C.&#xA;I had started with 1 + 1.</description>
     </item>
   </channel>
 </rss>

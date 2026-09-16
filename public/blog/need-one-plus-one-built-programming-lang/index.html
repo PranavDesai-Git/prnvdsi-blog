@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
     <meta charset="utf-8">
     <title>prnvdsi-blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -147,13 +147,13 @@ and right are its operands. once you evaluate stuff and you can replace the
 current root node with evaluated value.</p>
 <p>So I assigned myself to work of writing an evaluator for such expressions.
 I constructed the tree for 1+1+1 which could translate to</p>
-<pre tabindex="0"><code>
-     (+)
-    /   \
-  (+)   (1)
-  / \
-(1) (1)
-</code></pre><p>And so I needed to solve this. pretty easy you would think. and then the functional programming brain virus took over.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>       (+)
+</span></span><span style="display:flex;"><span>      /   \
+</span></span><span style="display:flex;"><span>    (+)   (1)
+</span></span><span style="display:flex;"><span>    / \
+</span></span><span style="display:flex;"><span>  (1) (1)
+</span></span></code></pre></div><p>And so I needed to solve this. pretty easy you would think. and then the functional programming brain virus took over.</p>
 <p>(´･ω･`)</p>
 <p>so then I realized we are just performing actions based on the current expressions so I defined them as a sum type of all the arithematic operations</p>
 <pre tabindex="0"><code>Expr ::= Add Expr Expr
@@ -427,12 +427,12 @@ when we evaluate 1+1+1 the evaluator does this:</p>
 </ol>
 </li>
 </ul>
-<pre tabindex="0"><code>    (+)
-    / \
-   (1)(+)
-      / \
-     (1)(1)
-</code></pre><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>      (+)
+</span></span><span style="display:flex;"><span>      / \
+</span></span><span style="display:flex;"><span>    (1) (+)
+</span></span><span style="display:flex;"><span>        / \
+</span></span><span style="display:flex;"><span>      (1) (1)
+</span></span></code></pre></div><ul>
 <li>
 <ol start="2">
 <li>Evaluates left. Left is already a literal. moves on to right</li>
@@ -444,10 +444,10 @@ when we evaluate 1+1+1 the evaluator does this:</p>
 </ol>
 </li>
 </ul>
-<pre tabindex="0"><code>    (+)
-    / \
-  (1) (2)
-</code></pre><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>      (+)
+</span></span><span style="display:flex;"><span>      / \
+</span></span><span style="display:flex;"><span>    (1) (2)
+</span></span></code></pre></div><blockquote>
 <p>But what happens to the two 1s?</p>
 </blockquote>
 <p>They are left on the allocator! they are never freed till the end of the program! that is exactly the problem.</p>
