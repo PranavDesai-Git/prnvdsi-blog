@@ -61,11 +61,14 @@ git add .">
         .subtext { font-size: 12pt; color: var(--nav-link); }
         
         pre {
+            padding: 15px 0;
+            background-color: transparent !important;
+            overflow-x: auto;
+        }
+        .highlight pre {
             padding: 15px;
             border: 4px double var(--text);
             border-radius: 0;
-            background-color: transparent !important;
-            overflow-x: auto;
         }
         code, pre code {
             font-family: monospace;
