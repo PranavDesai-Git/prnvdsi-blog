@@ -17,6 +17,7 @@ Naturally, instead of stopping there, I decided to build an evaluator for it.
 Then I had a thought.
 
 What if the evaluator didn't actually need to know what the operations were?
+
 A few days later I was implementing closures, a garbage collector, and a custom memory allocator in C.
 
 I had started with 1 + 1.
@@ -25,72 +26,89 @@ This is how I ended up building a functional programming language.
 
 ### THE DATA STRUCTURES ASSIGNMENT
 
-So, My prof taught us how to convert an expression into a binary tree.
-Naturally, I wondered how we would evaluate such trees. I concluded you 
-would recursively check the root node, the rootnodes are operators and left
-and right are its operands. once you evaluate stuff and you can replace the 
-current root node with evaluated value.
+The problem I was trying to solve was we needed to eavluate 1+1+1 to be 3 using a binary tree
 
-So I assigned myself to work of writing an evaluator for such expressions.
-I constructed the tree for 1+1+1 which could translate to 
+how do we get there?
+
+well we first form our tree for 1+1+1
 
 ```text
+     (+)
+     / \
+   (+) (1)
+   / \
+ (1) (1)
+```
 
-       (+)
-      /   \
-    (+)   (1)
+Notice the operator becomes the root node with both of its children being its operands
+
+Now lets evaluate this tree.
+
+- We first evaluate left operand for our root. which is a ```+ operator ```
+so we have to collapse it down to a literal to use it. Because the outer operation can't execute until its operands have become values.
+
+```text
+    (+)
     / \
-  (1) (1)
+  (2) (1)
 ```
-
-And so I needed to solve this. pretty easy you would think. and then the functional programming brain virus took over.
-
-(´･ω･`)
-
-so then I realized we are just performing actions based on the current expressions so I defined them as a sum type of all the arithematic operations
+now we evaluate again.
 
 ```
+(3) <--- thats our result
+```
+
+we just performed the equivalent of
+```lisp
+(+ (+ 1 1) 1)
+    |
+    v
+(+  2  1)
+    |
+    v
+   (3)
+```
+
+But notice what the evaluator had to know to do this: it had to know what + means.
+
+We can just have all our operations as the different things our evaluator needs to do
+so you could possibly represent it as a sum type:
+
+```text
 Expr ::= Add Expr Expr
        | Sub Expr Expr
        | Mul Expr Expr
        | Div Expr Expr
-       | Val Expr Expr
+       | Val
 ```
 
-and this Expr takes left and right as arguments. if left is a literal it is taken as an argument and if its an operator it is evaluated to a literal first
-And then. 
+But then I asked myself a question. What do these different types even represent.
+And does the evaluator REALLY need to know the difference between what an ADD represents and what a SUB 
+represents?
 
-I had an epipheny 
-(|'o'|).
-
-We dont need ADD/SUB/MUL/DIV the evaluator doesnt need to know what it is evaluating as long as it takes two Exprs and returns an Expr
-
-so now it can be rewritten as:
-
+Then I started implementing our sum types. And when I looked at the structure.
 ```
+Add: Expr x Expr  → Expr
+Sub: Expr x Expr  → Expr
+Mul: Expr x Expr  → Expr
+Div: Expr x Expr  → Expr
+```
+
+They all take in two expressions as an argument and spit out one expression.
+
+This is when I realized the evaluator doesnt need to know what the function does, it just needs to know what function to execute
+
+so now we can just represent our expression as:
+```text
 Expr ::= Func Expr Expr
-       | Val 
+       | Val
 ```
 
-So now our evaluator's job is pretty simple. just:
+The evaluator doesn't need to know what a function does. It only needs to know how to apply one.
 
-
-- See Node
-- If its a func, go to left
-- If left is a literal use that as arg
-- If not evaluate till you get literal
-- See right
-- Do the same
-- Both are literals 
-- Replace root func with literal
-
-ヽ(´ー｀)ﾉ
 ### Oh wait. you can add vars to this. it wouldnt be a big change 
-( ﾟヮﾟ)	
 
 Should be a one tiny addition no problem whatsoever. I mean variables are just a hashtable lookup that hold an Expr
-
-
 
 oh wait. C doesnt have built in hashtables.
 
@@ -103,9 +121,6 @@ I look it up on google like a caveman and find this amazing text
 
 [How to implement a hash table (in C)](https://benhoyt.com/writings/hash-table-in-c/)
 
-It was pretty easy to implement. Its not that difficult once you get it. 
-(tbf my implementation is pretty basic I dont have those Red Black self balacncing BST its just a linkedlist on collisions, Though I gotta add that to my todo I will implement those)
-
 So now we just got a little change in the Expr:
 
 ```
@@ -113,6 +128,8 @@ Expr ::= Func Expr Expr
        | Val 
        | Var 
 ```
+
+Would you look at that! we have variables now that can be passed to functions once evaluated! just like our (+)
 
 ---
 
@@ -125,7 +142,7 @@ alright  then time to code in C with this plan, seems simple enough. just a tagg
 typedef enum {
     LITERAL,
     VAR,
-    CALL,
+    FUNC,
 } NodeType;
 
 struct Node {
@@ -168,12 +185,10 @@ Right now the mem size of each ( assuming 64 bit system) is:
 
 That would be 32 x 3= **96 bytes** to evaluate 1+1.
 
-But heres the thing. when you malloc() a node malloc adds a header which takes up **16 bytes** of memory!
+But heres the thing. on my system, when you malloc() a node malloc adds a header which takes up **16 bytes** of memory!
 bringing our total per node to 32(node size) + 16 (malloc header) = **48 bytes!**
 
-if we add recursion or any sort of more complex functions other than 1+1 we will be looking at hundreds of thousands to even billions of nodes.
-
-malloc also sends a request to the operating system everythime we want to allocate a node. if we are doing this billions of times this is just not sustainable.
+And notice we will be doing a lot of little individual allocations. so, we will need a better way to allocate these nodes.
 
 we clearly need a custom allocator.
 
@@ -202,17 +217,16 @@ when we want to allocate a node we just return
     &arena[top++];
 ```
 
-I wrote the allocator and then defined a c func:
-
-Once our simple allocator was done we could easily allocate nodes by calling
+I wrote the allocator and defined a C function to allocate nodes:
 ```C 
 Node *allocNode();
 ```
 
 It was great! Now moving on to actually calling the functions.
+
 Then I realized
 
-> We can store the vars and funcs into the same struct to get higherorder functions for free! (°◇°)
+> We can store vars and funcs in the same environment! That means functions can just be values too (°◇°)
 
 Remember the hashtable we created earlier? its time to upgrade it.
 
@@ -238,8 +252,7 @@ result on the other.
 The initial idea was they will just be pointers to c
 funcs. But there is a huge problem with this: how do
 users write their own functions?
-When a user types code into our language, our parser
-reads text. It can't magically compile that text into
+When a user types code into our language, It can't magically compile that text into
 a native C function pointer on the fly. It can only
 build an AST (a tree of nodes).
 Also, if functions are just C pointers, they
@@ -272,6 +285,7 @@ it step-by-step whenever we want!
 
 > Now we have functions user can define themselves without ever touching the c code!!!
 
+If variables and functions are both values, the environment needs to map names to nodes.
 so now we can create our env entry as
 ```C 
 typedef struct EnvEntry {
@@ -281,8 +295,7 @@ typedef struct EnvEntry {
 } EnvEntry;
 ```
 
-we obtain the key using a very simple hashing function called djb2 
-obtain the key, look inside and get the val. simple.
+Now our hash table maps the names (key) to the Node * which is the value.
 
 but what *is* val?
 
@@ -310,7 +323,10 @@ struct Node {
 
 we have nativeFuncs which point to our c funcs and closures which are user defined funcs in our lang composed of nodes
 
-SO. we have:
+native function = opaque C implementation
+closure = language-level graph representation
+
+SO. we have assembled our pieces:
 
 - A Memory Allocator 
 
@@ -358,15 +374,15 @@ typedef struct Chunk {
 } Chunk;
 ```
 
-we can keep track of this by using a current and a first!(basically a head and a tail of an LL)
+we can keep track of this by using a current and a first!
 
 we have:
 
 - A Chunk Memory Allocator (new) 
 
-- A Environment table that holds both our vars, c funcs and userdefined funcs
+- An Environment table that holds both our vars, c funcs and userdefined funcs
 
-- An evaluator that just walks down the the program recursively and reduces them using env lookup
+- An Evaluator that just walks down the the program recursively and reduces them using env lookup
 
 > lets execute our first program again
 
@@ -380,7 +396,7 @@ we get the result 5! 3+2 is 5.
 but something weird happened. it was using 1.32 mb of memory.
 Thats weird, because fib(5) isnt a complex operation.
 
-so I rean fib(10)
+so I ran fib(10)
 it took 40 mb of ram !!
 so I had to test it out. I ran a benchmark.
 
@@ -405,7 +421,11 @@ RAM (GB) vs fib(n)
          5    10        20                  40
 ```
 
-fib(40) literally took 12+ GIGABYTES of memory. why? because it spawns approximately 1 Billion nodes.
+fib(40) literally took 12+ GIGABYTES before hitting an OOM and crashing. 
+
+why? because it spawns approximately 1.3 Billion nodes.
+
+At 48 bytes per node, 1.3 billion simultaneously-live nodes would be ~62.4 GB
 
 The problem is. we are allocating nodes but we are never freeing them once their use is over. This is causing us to allocate more and more memory.
 
@@ -440,7 +460,7 @@ when we evaluate 1+1+1 the evaluator does this:
 
 They are left on the allocator! they are never freed till the end of the program! that is exactly the problem.
 
-what we need our allocator to do is just walk through our chunk and mark what needs to be preserved and what dont.
+what we need our garbage collector to do is just walk through our chunk and mark what needs to be preserved and what dont.
 
 Now if you notice, when a node is a literal its children dont need to be preserved! we can reuse these free nodes!
 
@@ -496,7 +516,6 @@ why?
 we can tacle both of these issues.
 
 - We can implement a concurrent garbage collector
-- And do tail call optimization to rewrite recursive functions to use a cheaper algorithm
 
 ---
 ### What to expect in the next parts
@@ -525,9 +544,7 @@ This text has gone on long enough so I decided to split it into parts. in the ne
 
 We accomplished quite a lot here actually.
 
-- first we started with just a big switch case to do arithematic
-
-- And then realised this can be an Algebraic Data Type.
+- Realised operators and operands can be an Algebraic Data Type.
 
 - I then realized the real sum types arent the individual functions themselves but the type of data i.e. funcs, vars, literals
 
@@ -539,9 +556,9 @@ We accomplished quite a lot here actually.
 
 - Implemented a custom allocator to allocate our nodes
 
-- Realized we have too much free memory we are never using and implemented a mark and sweep garbagge collector
+- Realized we have too much garbage we are never using and implemented a mark and sweep garbagge collector
 
-- Overall I built a clean Graph Reduction engine
+- Overall I built a Graph Reduction engine
 
 ### WAIT. BUT DOES IT EVALUATE 1+1
 
