@@ -323,7 +323,7 @@ so I had to test it out. I ran a benchmark.
 ```
 RAM (GB) vs fib(n)
 
-12.29 GB ┼
+12.29 GB ┤  
 11.34 GB ┤    				             ╭───
 10.40 GB ┤			              ╭──────╯
  9.45 GB ┤                  ╭─────╯
@@ -340,3 +340,5 @@ RAM (GB) vs fib(n)
          -----------------------------------
          5    10        20                  40
 ```
+
+fib(40) literally took 12+ GIGABYTES of memory. why? because it spawns approximately 1 Billion nodes.

@@ -339,7 +339,7 @@ it took 40 mb of ram !!
 so I had to test it out. I ran a benchmark.</p>
 <pre tabindex="0"><code>RAM (GB) vs fib(n)
 
-12.29 GB ┼
+12.29 GB ┤  
 11.34 GB ┤    				             ╭───
 10.40 GB ┤			              ╭──────╯
  9.45 GB ┤                  ╭─────╯
@@ -355,7 +355,8 @@ so I had to test it out. I ran a benchmark.</p>
  0.00 GB ┼─────╯
          -----------------------------------
          5    10        20                  40
-</code></pre>
+</code></pre><p>fib(40) literally took 12+ GIGABYTES of memory. why? because it spawns approximately 1 Billion nodes.</p>
+
         </td>
     </tr>
     <tr>
