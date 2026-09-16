@@ -130,7 +130,16 @@
     </tr>
     <tr>
         <td>
-            <h3 id="the-data-structures-assignment">THE DATA STRUCTURES ASSIGNMENT</h3>
+            <p><a href="https://github.com/PranavDesai-Git/graphLang" target="_blank" rel="noopener noreferrer">graphLang</a>
+</p>
+<p>I was given a pretty straightforward data structures problem: convert an arithmetic expression into a binary tree.</p>
+<p>Naturally, instead of stopping there, I decided to build an evaluator for it.</p>
+<p>Then I had a thought.</p>
+<p>What if the evaluator didn&rsquo;t actually need to know what the operations were?
+A few days later I was implementing closures, a garbage collector, and a custom memory allocator in C.</p>
+<p>I had started with 1 + 1.</p>
+<p>This is how I ended up building a functional programming language.</p>
+<h3 id="the-data-structures-assignment">THE DATA STRUCTURES ASSIGNMENT</h3>
 <p>So, My prof taught us how to convert an expression into a binary tree.
 Naturally, I wondered how we would evaluate such trees. I concluded you
 would recursively check the root node, the rootnodes are operators and left
@@ -451,6 +460,112 @@ when we evaluate 1+1+1 the evaluator does this:</p>
 <p>if freeList is empty ONLY THEN will we allocate a new node on top.
 otherwise we just pop the head, and allocate the node at the memory address of head!</p>
 <p>This lets us recycle our nodes effectively!!</p>
+<blockquote>
+<p>lets run the bench mark after applying the gc:</p>
+</blockquote>
+<pre tabindex="0"><code>  RAM w/ GC (MB) vs fib(n)
+      1.7200 MB ┼
+      1.5886 MB ┤			                	╭───
+      1.4571 MB ┤                          ╭────╯
+      1.3257 MB ┤                    ╭─────╯
+      1.1942 MB ┤		        ╭────╯
+      1.0628 MB ┤             ╭─╯
+      0.9314 MB ┤            ╭╯
+      0.7999 MB ┤          ╭─╯
+      0.6685 MB ┤         ╭╯
+      0.5371 MB ┤       ╭─╯
+      0.4056 MB ┤      ╭╯
+      0.2742 MB ┤     ╭╯
+      0.1427 MB ┤ ╭───╯
+      0.0113 MB ┼─╯
+                 -----------------------------------
+           	     5    10        20                40
+</code></pre><p><strong>LOOK AT THAT!</strong> our ram usage went down from 12 GIGABYTES -&gt; 1.7 MEGABYTES for fib(40)</p>
+<p>but the thing is not yet solved.</p>
+<blockquote>
+<p>fib 40 took 6 MINUTES to evalueate</p>
+</blockquote>
+<p>why?</p>
+<ul>
+<li>
+<p>The mark and sweep garbage collector we just completed is a stop the world garbage collector</p>
+</li>
+<li>
+<p>And the algorithm fib is inherently exponential.</p>
+</li>
+</ul>
+<p>we can tacle both of these issues.</p>
+<ul>
+<li>We can implement a concurrent garbage collector</li>
+<li>And do tail call optimization to rewrite recursive functions to use a cheaper algorithm</li>
+</ul>
+<hr>
+<h3 id="what-to-expect-in-the-next-parts">What to expect in the next parts</h3>
+<p>This text has gone on long enough so I decided to split it into parts. in the next parts I will talk about</p>
+<ul>
+<li>
+<p>how I tackled the speed issue using TCO</p>
+</li>
+<li>
+<p>Implemented a Lexer/parser</p>
+</li>
+<li>
+<p>Implemented an FFI to completely decouple our core c funcs from the execution engine</p>
+</li>
+<li>
+<p>Implemented a REPL</p>
+</li>
+<li>
+<p>switched from pointer dereferencing to getters using Handle like V8</p>
+</li>
+<li>
+<p>Brought scuffed encapsulation into C</p>
+</li>
+<li>
+<p>Implemented lambda funcitons</p>
+</li>
+<li>
+<p>Added local vars</p>
+</li>
+<li>
+<p>Set up stuff for a cheney&rsquo;s copy allocator</p>
+</li>
+</ul>
+<h3 id="what-have-we-achieved-so-far">What have we achieved so far?</h3>
+<p>We accomplished quite a lot here actually.</p>
+<ul>
+<li>
+<p>first we started with just a big switch case to do arithematic</p>
+</li>
+<li>
+<p>And then realised this can be an Algebraic Data Type.</p>
+</li>
+<li>
+<p>I then realized the real sum types arent the individual functions themselves but the type of data i.e. funcs, vars, literals</p>
+</li>
+<li>
+<p>Then realized that vars and funcs are not two different things but both are just data</p>
+</li>
+<li>
+<p>Implemented a graph evaluator which mutates the current node after eval</p>
+</li>
+<li>
+<p>Implemented an Environment Table which stores our env entries as data using a custom hashtable</p>
+</li>
+<li>
+<p>Implemented a custom allocator to allocate our nodes</p>
+</li>
+<li>
+<p>Realized we have too much free memory we are never using and implemented a mark and sweep garbagge collector</p>
+</li>
+<li>
+<p>Overall I built a clean Graph Reduction engine</p>
+</li>
+</ul>
+<h3 id="wait-but-does-it-evaluate-11">WAIT. BUT DOES IT EVALUATE 1+1</h3>
+<p>yeah&hellip;I mean now it does now that I have a lexer/parser but after the state of the project mentioned in the blog</p>
+<p>&hellip;you would have to build your program by had using createFunction and stuff. but once you did it, it does it!</p>
+<p>1+1 is infact 2 according to graphLang! (￣ー￣)</p>
 
         </td>
     </tr>

@@ -7,22 +7,6 @@ categories: ["programming", "tech", "PL"]
 draft: false
 ---
 
-[graphLang](https://github.com/PranavDesai-Git/graphLang)
-
-
-I was given a pretty straightforward data structures problem: convert an arithmetic expression into a binary tree.
-
-Naturally, instead of stopping there, I decided to build an evaluator for it.
-
-Then I had a thought.
-
-What if the evaluator didn't actually need to know what the operations were?
-A few days later I was implementing closures, a garbage collector, and a custom memory allocator in C.
-
-I had started with 1 + 1.
-
-This is how I ended up building a functional programming language.
-
 ### THE DATA STRUCTURES ASSIGNMENT
 
 So, My prof taught us how to convert an expression into a binary tree.
@@ -542,12 +526,3 @@ We accomplished quite a lot here actually.
 - Realized we have too much free memory we are never using and implemented a mark and sweep garbagge collector
 
 - Overall I built a clean Graph Reduction engine
-
-### WAIT. BUT DOES IT EVALUATE 1+1
-
-yeah...I mean now it does now that I have a lexer/parser but after the state of the project mentioned in the blog
-
-...you would have to build your program by had using createFunction and stuff. but once you did it, it does it!
-
-1+1 is infact 2 according to graphLang! (￣ー￣)
-
