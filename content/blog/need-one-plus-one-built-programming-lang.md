@@ -217,7 +217,7 @@ result on the other.
     (func node)
     /         \
  (arg 1)    (arg 2)
- ````
+```
 
 The initial idea was they will just be pointers to c
 funcs. But there is a huge problem with this: how do
