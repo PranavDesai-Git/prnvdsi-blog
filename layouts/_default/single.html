@@ -3,9 +3,20 @@
     <tr>
         <td>
             <h2>{{ .Title }}</h2>
-            <div class="subtext" style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 5px;">
-                posted {{ .Date.Format "Jan 02, 2006" }}
+            <div class="subtext" style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; justify-content: space-between;">
+                <span>posted {{ .Date.Format "Jan 02, 2006" }}</span>
+                <span>👀 <span id="page-views">...</span> views</span>
             </div>
+            <script>
+                fetch('https://prnvdsi.goatcounter.com/counter/' + encodeURIComponent(location.pathname) + '.json')
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
+                        document.getElementById('page-views').innerText = (data.count || 0).toLocaleString();
+                    })
+                    .catch(function() {
+                        document.getElementById('page-views').innerText = '?';
+                    });
+            </script>
         </td>
     </tr>
     <tr>
