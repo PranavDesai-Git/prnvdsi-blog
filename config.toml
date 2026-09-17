@@ -6,6 +6,7 @@ theme = 'hugo-bearblog'
 [params]
   # The description of your site.
   description = "A very minimal blog written from the terminal."
+  favicon = "favicon.svg"
   
   # The text that shows in the header.
   title = "prnvdsi-blog"

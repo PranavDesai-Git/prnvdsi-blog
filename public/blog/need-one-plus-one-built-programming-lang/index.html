@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <title>prnvdsi-blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="icon" type="image/svg+xml" href="http://localhost:1313/favicon.svg">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -145,23 +148,23 @@ Naturally, I decided to build an evaluator for it.</p>
 <p>A few days later I implemented closures, a garbage collector, a custom memory allocator, a REPL, an FFI, and a whole bunch of other stuff in C.</p>
 <h3 id="the-data-structures-assignment">THE DATA STRUCTURES ASSIGNMENT</h3>
 <p>The problem was:
-evaluate 1 + 1 + 1 to 3 using a binary tree.</p>
+Evaluate 1 + 1 + 1 to 3 using a binary tree.</p>
 <p>How do we get there?</p>
-<p>well we first form our tree for 1+1+1</p>
+<p>Well we first form our tree for 1+1+1</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>     (+)
 </span></span><span style="display:flex;"><span>     / \
 </span></span><span style="display:flex;"><span>   (+) (1)
 </span></span><span style="display:flex;"><span>   / \
 </span></span><span style="display:flex;"><span> (1) (1)
 </span></span></code></pre></div><p>The operator becomes the root, with its two operands as children.</p>
-<p>Now lets evaluate this tree.</p>
+<p>Now let&rsquo;s evaluate this tree.</p>
 <p>We first evaluate the left operand of the root. It&rsquo;s another + expression, so we have to collapse it down to a value before the outer + can execute.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>    (+)
 </span></span><span style="display:flex;"><span>    / \
 </span></span><span style="display:flex;"><span>  (2) (1)
 </span></span></code></pre></div><p>Then we evaluate again.</p>
-<pre tabindex="0"><code>(3) &lt;--- thats our result
-</code></pre><p>we just performed the equivalent of</p>
+<pre tabindex="0"><code>(3) &lt;--- that&#39;s our result
+</code></pre><p>We just performed the equivalent of</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(<span style="color:#a6e22e">+</span> (<span style="color:#a6e22e">+</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">1</span>) <span style="color:#ae81ff">1</span>)
 </span></span><span style="display:flex;"><span>    |
 </span></span><span style="display:flex;"><span>    v
@@ -185,19 +188,19 @@ Mul: Expr x Expr  → Expr
 Div: Expr x Expr  → Expr
 </code></pre><p>They all take two expressions and produce one expression</p>
 <p>So why should the evaluator care whether the operation is Add, Sub, Mul, or Div?</p>
-<p>Seems like it doesnt.</p>
-<p>so now we can just represent our expression as:</p>
+<p>Seems like it doesn&rsquo;t.</p>
+<p>So now we can just represent our expression as:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">Expr</span> <span style="color:#66d9ef">::=</span> <span style="color:#66d9ef">Func</span> <span style="color:#66d9ef">Expr</span> <span style="color:#66d9ef">Expr</span>
 </span></span><span style="display:flex;"><span>       <span style="color:#f92672">|</span> <span style="color:#66d9ef">Val</span>
 </span></span></code></pre></div><p>The evaluator doesn&rsquo;t need to know what a function does. It only needs to know how to apply one.</p>
-<h3 id="we-can-add-vars-to-this-it-wouldnt-be-a-big-change">We can add vars to this. it wouldnt be a big change</h3>
-<p>Should be a one tiny addition no problem whatsoever. I mean variables are just a hashtable lookup that gives you an Expr
-oh wait. C doesnt have built in hashtables.</p>
+<h3 id="we-can-add-vars-to-this-it-wouldnt-be-a-big-change">We can add vars to this. It wouldn&rsquo;t be a big change</h3>
+<p>Should be a tiny addition no problem whatsoever. I mean variables are just a hashtable lookup that gives you an Expr
+Oh wait. C doesn&rsquo;t have built in hashtables.</p>
 <p>hmmm.（´-`）.｡oO( &hellip; )</p>
 <blockquote>
-<p>Lets just implement a hashtable. its small change! m9(・∀・)</p>
+<p>Let&rsquo;s just implement a hashtable. It&rsquo;s a small change! m9(・∀・)</p>
 </blockquote>
-<p>soo&hellip;.how does that work? I never implemeneted it before.
+<p>Soo&hellip;.how does that work? I never implemented it before.
 I look it up on google like a caveman and find this amazing text</p>
 <p><a href="https://benhoyt.com/writings/hash-table-in-c/" target="_blank" rel="noopener noreferrer">How to implement a hash table (in C)</a>
 </p>
@@ -239,18 +242,19 @@ I look it up on google like a caveman and find this amazing text</p>
 +------------------------+----------+
 | Total                  | 32 bytes |
 +------------------------+----------+
-</code></pre><p>32 Bytes might not seem like a lot but we gotta think how this is being used. for evaluating 1+1 we would need 3 nodes.</p>
+</code></pre><p>32 Bytes might not seem like a lot but we gotta think how this is being used. For evaluating 1+1 we would need 3 nodes.</p>
 <ul>
 <li>1 for the operator</li>
 <li>2 for the operands</li>
 </ul>
 <p>That would be 32 x 3= <strong>96 bytes</strong> to evaluate 1+1.</p>
-<p>But heres the thing. on my system, when you malloc() a node malloc adds a header which takes up <strong>16 bytes</strong> of memory!
-bringing our total per node to 32(node size) + 16 (malloc header) = <strong>48 bytes!</strong></p>
+<p>But here&rsquo;s the thing. On my system, when you malloc() a node, it added metadata which took up <strong>16 bytes</strong> of memory!
+Bringing our total per node to 32 (node size) + 16 (malloc header) = <strong>48 bytes!</strong></p>
+<p>So for our 3 nodes to evaluate a (+) we would need 144 bytes!</p>
 <p>And notice we&rsquo;re going to be doing a lot of little individual allocations.
-we need a better way to allocate these nodes.</p>
-<p>we clearly need a custom allocator.</p>
-<p>So, I look up what allocator we can use, again like a caveman, And I decide I will be writing an Arena Allocator</p>
+We need a better way to allocate these nodes.</p>
+<p>We clearly need a custom allocator.</p>
+<p>So, I look up what allocator we can use, again like a caveman, and I decide I will be writing an Arena Allocator</p>
 <hr>
 <h3 id="arena-allocator">Arena Allocator</h3>
 <p>The idea of an arena allocator is pretty simple. All you do is take a big chunk of memory at the start, allocate stuff yourself, and then at the end just free the entire block.</p>
@@ -259,7 +263,7 @@ we need a better way to allocate these nodes.</p>
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Node arena[SIZE]
 </span></span></code></pre></div><p>And when we allocate a node we can just keep track of the top using</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> top <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-</span></span></code></pre></div><p>when we want to allocate a node we just return</p>
+</span></span></code></pre></div><p>When we want to allocate a node we just return</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>    <span style="color:#f92672">&amp;</span>arena[top<span style="color:#f92672">++</span>];
 </span></span></code></pre></div><p>I wrote the allocator and defined a C function to allocate nodes:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>Node <span style="color:#f92672">*</span><span style="color:#a6e22e">allocNode</span>();
@@ -268,7 +272,7 @@ we need a better way to allocate these nodes.</p>
 <blockquote>
 <p>We can store vars and funcs in the same environment! That means functions can just be values too (°◇°)</p>
 </blockquote>
-<p>Remember the hashtable we created earlier? its time to upgrade it.</p>
+<p>Remember the hashtable we created earlier? It&rsquo;s time to upgrade it.</p>
 <hr>
 <h3 id="making-the-env-table">Making the Env Table</h3>
 <p>In the Env table we are storing two things. Vars and
@@ -290,7 +294,7 @@ users write their own functions?</p>
 What happens when a function returns another function? We need to be able to put that function back into the graph and evaluate it later. But a C function pointer isn&rsquo;t something our evaluator can walk through.</p>
 <p>Thus we need a type of node that tells the evaluator
 &ldquo;hey, I am a function, but my code isn&rsquo;t a C
-pointer,it is this tree right here.&rdquo;
+pointer, it is this tree right here.&rdquo;
 It needs to store the body of the function as a tree, so the evaluator can evaluate it over multiple steps. And for our purposes, that is our closure representation.</p>
 <p>Instead of a black-box C function, a closure is an
 actual node in our graph. It holds the parameter on
@@ -306,20 +310,20 @@ the other.</p>
 around, return it from other functions, and evaluate
 it step-by-step whenever we want!</p>
 <blockquote>
-<p>Now we have functions user can define themselves without ever touching the c code!!!</p>
+<p>Now we have functions user can define themselves without ever touching the C code!!!</p>
 </blockquote>
-<p>alright then, lets actually implement this in c. So what do we need?</p>
+<p>Alright then, let&rsquo;s actually implement this in C. So what do we need?</p>
 <p>If variables and functions are both values, the environment needs to map names to nodes.
-so now we can create our env entry as</p>
+So now we can create our env entry as</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> EnvEntry {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>key;
 </span></span><span style="display:flex;"><span>    Node <span style="color:#f92672">*</span>val;
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> EnvEntry <span style="color:#f92672">*</span>next;
 </span></span><span style="display:flex;"><span>} EnvEntry;
 </span></span></code></pre></div><p>Now our hash table maps the names (key) to the Node * which is the value.</p>
-<p>but what <em>is</em> val?</p>
-<p>val is a Node! But our Node doesn&rsquo;t know about closures or native funcs yet.
-So lets add those to our node definition from before.</p>
+<p>But what <em>is</em> val?</p>
+<p>Val is a Node! But our Node doesn&rsquo;t know about closures or native functions yet.
+So let&rsquo;s add those to our node definition from before.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> Node {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> Node <span style="color:#f92672">*</span>left;
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> Node <span style="color:#f92672">*</span>right;
@@ -338,68 +342,68 @@ So lets add those to our node definition from before.</p>
 </span></span></code></pre></div><p>nativeFuncs are nodes representing our C funcs, while closures are user-defined funcs composed of nodes</p>
 <p>native function = opaque C implementation
 closure = language-level graph representation</p>
-<p>SO. we have assembled our pieces:</p>
+<p>SO. We have assembled our pieces:</p>
 <ul>
 <li>
 <p>A Memory Allocator</p>
 </li>
 <li>
-<p>An Environment table that holds our vars, c funcs and userdefined funcs</p>
+<p>An Environment table that holds our vars, c funcs and user-defined funcs</p>
 </li>
 <li>
 <p>An evaluator that walks down the program and applies functions</p>
 </li>
 </ul>
 <blockquote>
-<p>lets execute our first program!!</p>
+<p>Let&rsquo;s execute our first program!!</p>
 </blockquote>
-<p>Right now we dont have a lexer/parser yet so we can just hand construct our AST.</p>
-<p>what better progrm to test than fibonacci sequence!</p>
-<p>So I wrote the program. typed in fib(5).</p>
+<p>Right now we don&rsquo;t have a lexer/parser yet so we can just hand construct our AST.</p>
+<p>What better program to test than the fibonacci sequence!</p>
+<p>So I wrote the program. Typed in fib(5).</p>
 <p>and&hellip;</p>
 <p><strong>IT CRASHED</strong></p>
 <hr>
 <h3 id="upgrading-the-memory-allocator">UPGRADING THE MEMORY ALLOCATOR</h3>
-<p>why? because our fib(5) spawned <strong>13k nodes</strong>. but our allocator size is only 1024 nodes total!
-You might think &ldquo;okay its obvious, reallocate the block and grow the size. have it be a dynamic array&rdquo;
-and thats exactly where the problem lies. The thing is, all of our nodes are pointing to each other inside this memory block.
-when we realloc it with an increased size, it might get moved to a new memory address.
+<p>Why? Because our fib(5) spawned <strong>13k nodes</strong>. But our allocator size is only 1024 nodes total!
+You might think &ldquo;okay it&rsquo;s obvious, reallocate the block and grow the size. Have it be a dynamic array&rdquo;
+And that&rsquo;s exactly where the problem lies. The thing is, all of our nodes are pointing to each other inside this memory block.
+When we realloc it with an increased size, it might get moved to a new memory address.
 Completely breaking all of our pointers and causing a segfault!
-how do we tackle this problem?</p>
+How do we tackle this problem?</p>
 <blockquote>
-<p>instead of growing one allocator, we can just chain multiple blocks together!</p>
+<p>Instead of growing one allocator, we can just chain multiple blocks together!</p>
 </blockquote>
-<p>we can build a linked list of our allocated blocks. when we run out of space in one block we just allocate a new one and point to it! we dont have to move any data!</p>
-<p>this is called a chunk allocator! each of our blocks is a chunk that stores the memory, and we chain them together like a linkedlist with a next pointer.</p>
+<p>We can build a linked list of our allocated blocks. When we run out of space in one block we just allocate a new one and point to it! We don&rsquo;t have to move any data!</p>
+<p>This is called a chunk allocator! Each of our blocks is a chunk that stores the memory, and we chain them together like a linked list with a next pointer.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> Chunk {
 </span></span><span style="display:flex;"><span>    Node nodes[CHUNK_SIZE];
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> Chunk <span style="color:#f92672">*</span>next;
 </span></span><span style="display:flex;"><span>} Chunk;
-</span></span></code></pre></div><p>we can keep track of the first chunk and the chunk we&rsquo;re currently allocating from.</p>
-<p>we have:</p>
+</span></span></code></pre></div><p>We can keep track of the first chunk and the chunk we&rsquo;re currently allocating from.</p>
+<p>We have:</p>
 <ul>
 <li>
 <p>A Chunk Memory Allocator (new)</p>
 </li>
 <li>
-<p>An Environment table that holds both our vars, c funcs and userdefined funcs</p>
+<p>An Environment table that holds both our vars, c funcs and user-defined funcs</p>
 </li>
 <li>
-<p>An Evaluator that just walks down the the program recursively and reduces them using env lookup</p>
+<p>An Evaluator that just walks down the program recursively and reduces them using env lookup</p>
 </li>
 </ul>
 <blockquote>
-<p>lets execute our first program again</p>
+<p>Let&rsquo;s execute our first program again</p>
 </blockquote>
 <p>and&hellip;</p>
 <p><strong>It works!</strong></p>
-<p>we get the result 5! 3+2 is 5.</p>
-<p><strong>but something weird happened</strong>. it was using 1.32 mb of memory.
-Thats weird, because fib(5) isnt a complex operation.</p>
-<p>so I ran fib(10)
-it took 40 mb of ram !!
-Okay, well thats weird.
-so I had to test it out. I ran a benchmark.</p>
+<p>We get the result 5! 3+2 is 5.</p>
+<p><strong>But something weird happened</strong>. It was using 1.32 mb of memory.
+That&rsquo;s weird, because fib(5) isn&rsquo;t a complex operation.</p>
+<p>So I ran fib(10)
+It took 40 mb of ram !!
+Okay, well that&rsquo;s weird.
+So I had to test it out. I ran a benchmark.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>RAM (GB) vs fib(n)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>12.29 GB ┤  
@@ -418,17 +422,17 @@ so I had to test it out. I ran a benchmark.</p>
 </span></span><span style="display:flex;"><span> 0.00 GB ┼─────╯
 </span></span><span style="display:flex;"><span>         -----------------------------------
 </span></span><span style="display:flex;"><span>         5    10        20                  40
-</span></span></code></pre></div><p>fib(40) literally took 12+ GIGABYTES before hitting an OOM and crashing.</p>
-<p>why? because it spawns approximately 1.3 Billion nodes.</p>
+</span></span></code></pre></div><p>Fib(40) literally took 12+ GIGABYTES before hitting an OOM and crashing.</p>
+<p>Why? Because it spawns approximately 1.3 Billion nodes.</p>
 <p>At 48 bytes per node, that&rsquo;s ~62.4 GB worth of node allocations.</p>
 <p>The problem is&hellip;</p>
-<p>we&rsquo;re allocating nodes but never freeing them once their use is over.</p>
+<p>We&rsquo;re allocating nodes but never freeing them once their use is over.</p>
 <p>To tackle this problem I had to build a garbage collector.</p>
 <hr>
 <h3 id="building-the-garbage-collector">BUILDING THE GARBAGE COLLECTOR</h3>
-<p>what does it mean to collect garbage?</p>
-<p>basically, we need to get rid of nodes that the program can no longer reach.</p>
-<p>when we evaluate 1+1+1 the evaluator does this:</p>
+<p>What does it mean to collect garbage?</p>
+<p>Basically, we need to get rid of nodes that the program can no longer reach.</p>
+<p>When we evaluate 1+1+1 the evaluator does this:</p>
 <ul>
 <li>
 <ol>
@@ -444,12 +448,12 @@ so I had to test it out. I ran a benchmark.</p>
 </span></span></code></pre></div><ul>
 <li>
 <ol start="2">
-<li>Evaluates left. Left is already a literal. moves on to right</li>
+<li>Evaluates left. Left is already a literal. Moves on to right.</li>
 </ol>
 </li>
 <li>
 <ol start="3">
-<li>Right is a function. so it gets evaluated first. and we mutate the tree.</li>
+<li>Right is a function. So it gets evaluated first. And we mutate the tree.</li>
 </ol>
 </li>
 </ul>
@@ -459,18 +463,18 @@ so I had to test it out. I ran a benchmark.</p>
 </span></span></code></pre></div><blockquote>
 <p>But what happens to the two 1s?</p>
 </blockquote>
-<p>They are left sitting in the allocator! they aren&rsquo;t freed until the end of the program!</p>
-<p>what we need our garbage collector to do is start from our roots and mark every node that can still be reached.</p>
+<p>They are left sitting in the allocator! They aren&rsquo;t freed until the end of the program!</p>
+<p>What we need our garbage collector to do is start from our roots and mark every node that can still be reached.</p>
 <p>Now if you notice, when we&rsquo;ve reduced a node to a literal, its old children are no longer reachable through that node!</p>
-<p>what we could do is, once we mutate to a literal, just null out both children. then the garbage collector can never reach those old nodes from this part of the graph.</p>
-<p>this is called the mark phase. the garbage collector starts from its roots and marks every node it can reach.</p>
-<p>once marking is done we have the garbage collector go through our chunks and just check if a node is not marked and add it to a linked list called the freeList.</p>
-<p>now when we need a new node, we can reuse one of those nodes instead of allocating another one.</p>
-<p>if freeList is empty, only then do we allocate a new node from the current chunk.
-otherwise we just pop the head and reuse that memory.</p>
+<p>What we could do is, once we mutate to a literal, just null out both children. Then the garbage collector can never reach those old nodes from this part of the graph.</p>
+<p>This is called the mark phase. The garbage collector starts from its roots and marks every node it can reach.</p>
+<p>Once marking is done we have the garbage collector go through our chunks and just check if a node is not marked and add it to a linked list called the freeList.</p>
+<p>Now when we need a new node, we can reuse one of those nodes instead of allocating another one.</p>
+<p>If freeList is empty, only then do we allocate a new node from the current chunk.
+Otherwise we just pop the head and reuse that memory.</p>
 <p>This lets us recycle our nodes effectively!!</p>
 <blockquote>
-<p>lets run the bench mark after applying the gc:</p>
+<p>Let&rsquo;s run the benchmark after applying the gc:</p>
 </blockquote>
 <pre tabindex="0"><code>  RAM w/ GC (MB) vs fib(n)
       1.7200 MB ┼
@@ -489,18 +493,18 @@ otherwise we just pop the head and reuse that memory.</p>
       0.0113 MB ┼─╯
                  -----------------------------------
                  5    10        20                40
-</code></pre><p><strong>LOOK AT THAT!</strong> our ram usage went down from 12 GIGABYTES -&gt; 1.7 MEGABYTES for fib(40)</p>
-<p>thats insane.</p>
-<p>but the thing is not yet solved.</p>
+</code></pre><p><strong>LOOK AT THAT!</strong> Our ram usage went down from 12 GIGABYTES -&gt; 1.7 MEGABYTES for fib(40)</p>
+<p>That&rsquo;s insane.</p>
+<p>But the thing is not yet solved.</p>
 <blockquote>
 <p>fib 40 took 6 MINUTES to evaluate</p>
 </blockquote>
-<p>why?</p>
-<p>The mark and sweep garbage collector we just completed is a stop the world garbage collector.</p>
+<p>Why?</p>
+<p>The mark and sweep garbage collector we just completed is a stop-the-world garbage collector.</p>
 <p>And the algorithm we&rsquo;re running is inherently exponential.</p>
-<p>so we&rsquo;ve fixed our memory problem.</p>
-<p>but now we have a performance problem.</p>
-<p>we can tackle both of these issues.</p>
+<p>So we&rsquo;ve fixed our memory problem.</p>
+<p>But now we have a performance problem.</p>
+<p>We can tackle both of these issues.</p>
 <ul>
 <li>We can implement a concurrent garbage collector</li>
 <li>And we can do something about how we&rsquo;re evaluating fib itself</li>
@@ -521,7 +525,7 @@ otherwise we just pop the head and reuse that memory.</p>
 </ul>
 <h3 id="what-have-we-achieved-so-far">What have we achieved so far?</h3>
 <ul>
-<li>Realised our expression type can be an Algebraic Data Type.</li>
+<li>Realized our expression type can be an Algebraic Data Type.</li>
 <li>Then realized the actual variants are the kinds of data: funcs, vars, literals</li>
 <li>Then realized vars and funcs aren&rsquo;t really two different things but both are just data</li>
 <li>Implemented a graph evaluator which mutates the current node after eval</li>
@@ -531,10 +535,9 @@ otherwise we just pop the head and reuse that memory.</p>
 </ul>
 <p>Overall I built a Graph Reduction engine</p>
 <h3 id="wait-but-does-it-evaluate-11">WAIT. BUT DOES IT EVALUATE 1+1</h3>
-<p>yeah&hellip; I mean, now it does.</p>
-<p>but at the point where this blog ends, we didn&rsquo;t have a lexer/parser yet.</p>
-<p>you would have to build your program by hand using createFunction and stuff. but once you did it, it works!</p>
-<p>anyhow, there&rsquo;s a bunch more stuff I didn&rsquo;t cover here. It&rsquo;s all in the repo.</p>
+<p>Yeah&hellip; I mean, now it does.</p>
+<p>1+1 is in fact 2 according to graphLang! (´･ω･`)</p>
+<p>Anyhow, there&rsquo;s a bunch more stuff I didn&rsquo;t cover here. It&rsquo;s all in the repo.</p>
 
         </td>
     </tr>

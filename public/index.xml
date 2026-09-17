@@ -13,7 +13,7 @@
       <link>http://localhost:1313/blog/need-one-plus-one-built-programming-lang/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
       <guid>http://localhost:1313/blog/need-one-plus-one-built-programming-lang/</guid>
-      <description>graphLang I was given a data structures problem of converting an arithmetic expression into a binary tree. Naturally, I decided to build an evaluator for it.&#xA;A few days later I implemented closures, a garbage collector, a custom memory allocator, a REPL, an FFI, and a whole bunch of other stuff in C.&#xA;THE DATA STRUCTURES ASSIGNMENT The problem was: evaluate 1 + 1 + 1 to 3 using a binary tree.</description>
+      <description>graphLang I was given a data structures problem of converting an arithmetic expression into a binary tree. Naturally, I decided to build an evaluator for it.&#xA;A few days later I implemented closures, a garbage collector, a custom memory allocator, a REPL, an FFI, and a whole bunch of other stuff in C.&#xA;THE DATA STRUCTURES ASSIGNMENT The problem was: Evaluate 1 + 1 + 1 to 3 using a binary tree.</description>
     </item>
   </channel>
 </rss>
