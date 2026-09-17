@@ -2,66 +2,45 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on prnvdsi-blog</title>
-    <link>https://your-vercel-url.vercel.app/tags/</link>
+    <link>http://localhost:1313/tags/</link>
     <description>Recent content in Tags on prnvdsi-blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 16 Sep 2026 06:12:00 +0530</lastBuildDate>
-    <atom:link href="https://your-vercel-url.vercel.app/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>C</title>
-      <link>https://your-vercel-url.vercel.app/tags/c/</link>
+      <link>http://localhost:1313/tags/c/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
-      <guid>https://your-vercel-url.vercel.app/tags/c/</guid>
+      <guid>http://localhost:1313/tags/c/</guid>
       <description></description>
     </item>
     <item>
       <title>Compilers</title>
-      <link>https://your-vercel-url.vercel.app/tags/compilers/</link>
+      <link>http://localhost:1313/tags/compilers/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
-      <guid>https://your-vercel-url.vercel.app/tags/compilers/</guid>
+      <guid>http://localhost:1313/tags/compilers/</guid>
       <description></description>
     </item>
     <item>
       <title>Functional Programming</title>
-      <link>https://your-vercel-url.vercel.app/tags/functional-programming/</link>
+      <link>http://localhost:1313/tags/functional-programming/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
-      <guid>https://your-vercel-url.vercel.app/tags/functional-programming/</guid>
+      <guid>http://localhost:1313/tags/functional-programming/</guid>
       <description></description>
     </item>
     <item>
       <title>Graph Reduction</title>
-      <link>https://your-vercel-url.vercel.app/tags/graph-reduction/</link>
+      <link>http://localhost:1313/tags/graph-reduction/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
-      <guid>https://your-vercel-url.vercel.app/tags/graph-reduction/</guid>
+      <guid>http://localhost:1313/tags/graph-reduction/</guid>
       <description></description>
     </item>
     <item>
       <title>Weekend-Project</title>
-      <link>https://your-vercel-url.vercel.app/tags/weekend-project/</link>
+      <link>http://localhost:1313/tags/weekend-project/</link>
       <pubDate>Wed, 16 Sep 2026 06:12:00 +0530</pubDate>
-      <guid>https://your-vercel-url.vercel.app/tags/weekend-project/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Minimal</title>
-      <link>https://your-vercel-url.vercel.app/tags/minimal/</link>
-      <pubDate>Tue, 15 Sep 2026 17:30:00 +0530</pubDate>
-      <guid>https://your-vercel-url.vercel.app/tags/minimal/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Ssg</title>
-      <link>https://your-vercel-url.vercel.app/tags/ssg/</link>
-      <pubDate>Tue, 15 Sep 2026 17:30:00 +0530</pubDate>
-      <guid>https://your-vercel-url.vercel.app/tags/ssg/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Terminal</title>
-      <link>https://your-vercel-url.vercel.app/tags/terminal/</link>
-      <pubDate>Tue, 15 Sep 2026 17:30:00 +0530</pubDate>
-      <guid>https://your-vercel-url.vercel.app/tags/terminal/</guid>
+      <guid>http://localhost:1313/tags/weekend-project/</guid>
       <description></description>
     </item>
   </channel>
