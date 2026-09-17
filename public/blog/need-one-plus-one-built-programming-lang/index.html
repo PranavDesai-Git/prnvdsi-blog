@@ -5,7 +5,7 @@
     <title>prnvdsi-blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <link rel="icon" type="image/svg+xml" href="http://localhost:1313/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -134,9 +134,20 @@
     <tr>
         <td>
             <h2>Needed 1&#43;1, Built a Functional Programming Language</h2>
-            <div class="subtext" style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 5px;">
-                posted Sep 16, 2026
+            <div class="subtext" style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; justify-content: space-between;">
+                <span>posted Sep 16, 2026</span>
+                <span><span id="page-views">...</span> views</span>
             </div>
+            <script>
+                fetch('/stats/api/counter/' + encodeURIComponent(location.pathname) + '.json')
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
+                        document.getElementById('page-views').innerText = (data.count || 0).toLocaleString();
+                    })
+                    .catch(function() {
+                        document.getElementById('page-views').innerText = '?';
+                    });
+            </script>
         </td>
     </tr>
     <tr>
@@ -557,5 +568,6 @@ Otherwise we just pop the head and reuse that memory.</p>
         </td>
     </tr>
 </table>
+<script data-goatcounter="/stats/api/count" async src="/stats/count.js"></script>
 </body>
 </html>

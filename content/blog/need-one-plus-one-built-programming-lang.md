@@ -11,7 +11,7 @@ draft: false
 
 
 I was given a data structures problem of converting an arithmetic expression into a binary tree.
-Naturally, I decided to build an evaluator for it.
+Naturally, I decided to build an evaluator.
 
 A few days later I implemented closures, a garbage collector, a custom memory allocator, a REPL, an FFI, and a whole bunch of other stuff in C.
 
@@ -22,7 +22,7 @@ Evaluate 1 + 1 + 1 to 3 using a binary tree.
 
 How do we get there?
 
-Well we first form our tree for 1+1+1
+Well, we first form our tree for 1+1+1
 
 ```text
      (+)
@@ -36,7 +36,7 @@ The operator becomes the root, with its two operands as children.
 
 Now let's evaluate this tree.
 
-We first evaluate the left operand of the root. It's another + expression, so we have to collapse it down to a value before the outer + can execute.
+First, we evaluate the root's left operand. It's another + expression, so we have to collapse it down to a value before the outer + can execute.
 
 ```text
     (+)
@@ -85,7 +85,7 @@ Mul: Expr x Expr  → Expr
 Div: Expr x Expr  → Expr
 ```
 
-They all take two expressions and produce one expression
+They all take two expressions and produce one expression.
 
 So why should the evaluator care whether the operation is Add, Sub, Mul, or Div?
 
@@ -101,15 +101,15 @@ The evaluator doesn't need to know what a function does. It only needs to know h
 
 ### We can add vars to this. It wouldn't be a big change 
 
-Should be a tiny addition no problem whatsoever. I mean variables are just a hashtable lookup that gives you an Expr
-Oh wait. C doesn't have built in hashtables.
+Should be a tiny addition, no problem whatsoever. I mean variables are just a hash table lookup that gives you an Expr.
+Oh wait. C doesn't have built-in hash tables.
 
 hmmm.（´-`）.｡oO( ... )
 
 > Let's just implement a hashtable. It's a small change! m9(・∀・)
 
-Soo....how does that work? I never implemented it before.
-I look it up on google like a caveman and find this amazing text
+Soo...how does that work? I never implemented it before.
+I look it up on Google like a caveman and find this amazing text.
 
 [How to implement a hash table (in C)](https://benhoyt.com/writings/hash-table-in-c/)
 
@@ -170,13 +170,13 @@ Right now the mem size of each ( assuming 64 bit system) is:
 
 
 
-32 Bytes might not seem like a lot but we gotta think how this is being used. For evaluating 1+1 we would need 3 nodes.
+32 Bytes might not seem like a lot, but we gotta think about how this is being used. For evaluating 1+1, we would need 3 nodes.
 - 1 for the operator
 - 2 for the operands
 
 That would be 32 x 3= **96 bytes** to evaluate 1+1.
 
-But here's the thing. On my system, when you malloc() a node, it added metadata which took up **16 bytes** of memory!
+But here's the thing. On my system, when you malloc() a node, it adds metadata, which takes up **16 bytes** of memory!
 Bringing our total per node to 32 (node size) + 16 (malloc header) = **48 bytes!**
 
 So for our 3 nodes to evaluate a (+) we would need 144 bytes!
@@ -186,7 +186,7 @@ We need a better way to allocate these nodes.
 
 We clearly need a custom allocator.
 
-So, I look up what allocator we can use, again like a caveman, and I decide I will be writing an Arena Allocator
+So, I look up what allocator we can use, again like a caveman, and I decide I will be writing an Arena Allocator.
 
 ---
 
@@ -202,11 +202,11 @@ So my arena allocator would just be:
     Node arena[SIZE]
 ```
 
-And when we allocate a node we can just keep track of the top using
+And when we allocate a node, we can just keep track of the top using.
 ```C
     int top = 0;
 ```
-When we want to allocate a node we just return 
+When we want to allocate a node, we just return.
 ```C 
     &arena[top++];
 ```
@@ -244,13 +244,13 @@ result on the other.
 ```
 
 
-The initial idea was they will just be pointers to c
+The initial idea was that they would just be pointers to C
 funcs. Seems simple enough.
 
 But there is a huge problem with this: how do
 users write their own functions?
 
-But there's another problem
+But there's another problem.
 
 When a user types code into our language, it can't magically become a native C function pointer. It can only build an AST (a tree of nodes).
 
@@ -258,8 +258,8 @@ If functions are just C pointers, they immediately become opaque values.
 What happens when a function returns another function? We need to be able to put that function back into the graph and evaluate it later. But a C function pointer isn't something our evaluator can walk through.
 
 Thus we need a type of node that tells the evaluator
-"hey, I am a function, but my code isn't a C
-pointer, it is this tree right here." 
+"Hey, I am a function, but my code isn't a C
+pointer; it is this tree right here." 
 It needs to store the body of the function as a tree, so the evaluator can evaluate it over multiple steps. And for our purposes, that is our closure representation.
 
 
@@ -283,7 +283,7 @@ By making the function an actual node, we can pass it
 around, return it from other functions, and evaluate
 it step-by-step whenever we want!
 
-> Now we have functions user can define themselves without ever touching the C code!!!
+> Now we have functions users can define themselves without ever touching the C code!!!
 
 
 Alright then, let's actually implement this in C. So what do we need?
@@ -338,7 +338,7 @@ SO. We have assembled our pieces:
 
 > Let's execute our first program!!
 
-Right now we don't have a lexer/parser yet so we can just hand construct our AST.
+Right now we don't have a lexer/parser yet, so we can just hand-construct our AST.
 
 What better program to test than the fibonacci sequence!
 
@@ -354,7 +354,7 @@ and...
 ### UPGRADING THE MEMORY ALLOCATOR
 
 Why? Because our fib(5) spawned **13k nodes**. But our allocator size is only 1024 nodes total!
-You might think "okay it's obvious, reallocate the block and grow the size. Have it be a dynamic array"
+You might think "Okay, it's obvious: reallocate the block and grow the size. Have it be a dynamic array"
 And that's exactly where the problem lies. The thing is, all of our nodes are pointing to each other inside this memory block.
 When we realloc it with an increased size, it might get moved to a new memory address.
 Completely breaking all of our pointers and causing a segfault! 
@@ -362,7 +362,7 @@ How do we tackle this problem?
 
 > Instead of growing one allocator, we can just chain multiple blocks together!
 
-We can build a linked list of our allocated blocks. When we run out of space in one block we just allocate a new one and point to it! We don't have to move any data!
+We can build a linked list of our allocated blocks. When we run out of space in one block, we just allocate a new one and point to it! We don't have to move any data!
 
 
 This is called a chunk allocator! Each of our blocks is a chunk that stores the memory, and we chain them together like a linked list with a next pointer.
@@ -397,7 +397,7 @@ We get the result 5! 3+2 is 5.
 That's weird, because fib(5) isn't a complex operation.
 
 So I ran fib(10)
-It took 40 mb of ram !!
+It took 40 mb of RAM!!
 Okay, well that's weird.
 So I had to test it out. I ran a benchmark.
 
@@ -432,7 +432,7 @@ The problem is...
 
 We're allocating nodes but never freeing them once their use is over.
 
-To tackle this problem I had to build a garbage collector.
+To tackle this problem, I had to build a garbage collector.
 
 ---
 ### BUILDING THE GARBAGE COLLECTOR
@@ -474,13 +474,13 @@ What we could do is, once we mutate to a literal, just null out both children. T
 
 This is called the mark phase. The garbage collector starts from its roots and marks every node it can reach.
 
-Once marking is done we have the garbage collector go through our chunks and just check if a node is not marked and add it to a linked list called the freeList.
+Once marking is done, we have the garbage collector go through our chunks and just check if a node is not marked and add it to a linked list called the freeList.
 
 Now when we need a new node, we can reuse one of those nodes instead of allocating another one.
 
 
 If freeList is empty, only then do we allocate a new node from the current chunk.
-Otherwise we just pop the head and reuse that memory.
+Otherwise, we just pop the head and reuse that memory.
 
 This lets us recycle our nodes effectively!!
 
@@ -516,7 +516,7 @@ But the thing is not yet solved.
 
 Why?
 
-The mark and sweep garbage collector we just completed is a stop-the-world garbage collector.
+The mark-and-sweep garbage collector we just completed is a stop-the-world garbage collector.
 
 And the algorithm we're running is inherently exponential.
 
@@ -551,10 +551,10 @@ This has gone on long enough, so I decided to split it into parts.
 - Implemented a graph evaluator which mutates the current node after eval
 - Implemented an Environment Table using a custom hashtable
 - Implemented a custom chunk allocator to allocate our nodes
-- Realized we were keeping around a ton of garbage and implemented a mark and sweep garbage collector
+- Realized we were keeping around a ton of garbage and implemented a mark-and-sweep garbage collector
 
 
-Overall I built a Graph Reduction engine
+Overall, I built a Graph Reduction engine
 
 ### WAIT. BUT DOES IT EVALUATE 1+1
 
