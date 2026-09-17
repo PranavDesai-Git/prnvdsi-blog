@@ -6,5 +6,15 @@
     "env": {
       "HUGO_VERSION": "0.123.8"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/stats/count.js",
+      "destination": "https://gc.zgo.at/count.js"
+    },
+    {
+      "source": "/stats/api/:match*",
+      "destination": "https://prnvdsi.goatcounter.com/:match*"
+    }
+  ]
 }

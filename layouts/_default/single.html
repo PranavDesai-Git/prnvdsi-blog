@@ -8,7 +8,7 @@
                 <span><span id="page-views">...</span> views</span>
             </div>
             <script>
-                fetch('https://prnvdsi.goatcounter.com/counter/' + encodeURIComponent(location.pathname) + '.json')
+                fetch('/stats/api/counter/' + encodeURIComponent(location.pathname) + '.json')
                     .then(function(res) { return res.json(); })
                     .then(function(data) {
                         document.getElementById('page-views').innerText = (data.count || 0).toLocaleString();
