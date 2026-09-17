@@ -18,17 +18,17 @@ Then I had a thought.
 
 What if the evaluator didn't actually need to know what the operations were?
 
-A few days later I was implementing closures, a garbage collector, and a custom memory allocator in C.
+A few days later I implemented closures, a garbage collector, and a custom memory allocator in C.
 
 I had started with 1 + 1.
 
-This is how I ended up building a functional programming language.
+And... ended up building a functional programming language.
 
 ### THE DATA STRUCTURES ASSIGNMENT
 
-The problem I was trying to solve was we needed to eavluate 1+1+1 to be 3 using a binary tree
+The problem was: evaluate 1 + 1 + 1 to 3 using a binary tree.
 
-how do we get there?
+How do we get there?
 
 well we first form our tree for 1+1+1
 
@@ -40,19 +40,19 @@ well we first form our tree for 1+1+1
  (1) (1)
 ```
 
-Notice the operator becomes the root node with both of its children being its operands
+The operator becomes the root, with its two operands as children.
 
 Now lets evaluate this tree.
 
-- We first evaluate left operand for our root. which is a ```+ operator ```
-so we have to collapse it down to a literal to use it. Because the outer operation can't execute until its operands have become values.
+We first evaluate the left operand of the root. It's another + expression, so we have to collapse it to a value before the outer + can execute.
 
 ```text
     (+)
     / \
   (2) (1)
 ```
-now we evaluate again.
+
+Then we evaluate again.
 
 ```
 (3) <--- thats our result
@@ -69,10 +69,9 @@ we just performed the equivalent of
    (3)
 ```
 
-But notice what the evaluator had to know to do this: it had to know what + means.
+But notice what the evaluator had to know to do this: what + means.
 
-We can just have all our operations as the different things our evaluator needs to do
-so you could possibly represent it as a sum type:
+One way to represent this is to make every operation a different case in our expression type:
 
 ```text
 Expr ::= Add Expr Expr
@@ -82,9 +81,9 @@ Expr ::= Add Expr Expr
        | Val
 ```
 
-But then I asked myself a question. What do these different types even represent.
-And does the evaluator REALLY need to know the difference between what an ADD represents and what a SUB 
-represents?
+what do these different cases actually represent?
+
+And does the evaluator really need to know the difference between Add and Sub?
 
 Then I started implementing our sum types. And when I looked at the structure.
 ```
@@ -94,7 +93,9 @@ Mul: Expr x Expr  → Expr
 Div: Expr x Expr  → Expr
 ```
 
-They all take in two expressions as an argument and spit out one expression.
+They all take two expressions and produce one expression
+
+So why should the evaluator care whether the function is Add, Sub, Mul, or Div?
 
 This is when I realized the evaluator doesnt need to know what the function does, it just needs to know what function to execute
 
@@ -568,3 +569,5 @@ yeah...I mean now it does now that I have a lexer/parser but after the state of 
 
 1+1 is infact 2 according to graphLang! (￣ー￣)
 
+
+anyhow, I did a bunch of work not mentioned in this post as mentioned above. checkout the repo
